@@ -1,6 +1,6 @@
 # Privacy Policy for Dolib
 
-**Last updated:** March 30, 2025
+**Last updated:** 28 September 2026
 
 **Dolib** is a free, open-source application ("Freeware") created with assistance from **Google AI Studio** and **Gemini**. This Privacy Policy explains our commitment to user privacy and details how the application handles data.
 
