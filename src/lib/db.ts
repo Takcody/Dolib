@@ -1,0 +1,50 @@
+import Dexie, { type Table } from 'dexie';
+
+export interface Book {
+  id?: number;
+  title: string;
+  author: string;
+  barcode?: string;
+  parody?: string; // As requested, likely category/genre
+  coverImage?: string; // Base64 string
+  addedAt: number;
+  notes?: string;
+  size?: string;
+}
+
+export interface AppSettings {
+  id: string;
+  passcode?: string;
+  isLocked: boolean;
+  lastExportAt?: number;
+  isDarkMode?: boolean;
+  language?: string;
+  customBackground?: string;
+  backgroundDim?: number;
+}
+
+export class LibrisDatabase extends Dexie {
+  books!: Table<Book>;
+  settings!: Table<AppSettings>;
+
+  constructor() {
+    super('LibrisDB');
+    this.version(1).stores({
+      books: '++id, title, author, barcode, parody, addedAt',
+      settings: 'id'
+    });
+  }
+}
+
+export const db = new LibrisDatabase();
+
+// Initialize settings if not exists
+export async function initSettings() {
+  const settings = await db.settings.get('main');
+  if (!settings) {
+    await db.settings.add({
+      id: 'main',
+      isLocked: false
+    });
+  }
+}

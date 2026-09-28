@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Dolib</string>
+    <string name="title_activity_main">Dolib</string>
+    <string name="package_name">com.dolib.db</string>
+    <string name="custom_url_scheme">com.dolib.db</string>
+</resources>

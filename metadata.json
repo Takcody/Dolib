@@ -1,0 +1,5 @@
+{
+  "name": "Dolib",
+  "description": "An app to keep track of doujinshi that you've purchased.",
+  "requestFramePermissions": ["camera"]
+}
