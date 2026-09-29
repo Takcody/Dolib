@@ -68,6 +68,7 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
         return;
       }
 
+      localStorage.setItem('biometricActive', 'true');
       await NativeBiometric.verifyIdentity({
         reason: 'Unlock Dolib Library',
         title: t('use_fingerprint') || 'Biometric Authentication',
@@ -176,7 +177,7 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="relative z-10 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col items-center h-full my-auto justify-between gap-4 sm:gap-6 md:gap-8 py-2 min-h-[500px] max-h-[720px] sm:max-h-[820px] md:max-h-[900px]"
+        className="relative z-10 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col items-center h-full flex-grow my-auto justify-between gap-4 sm:gap-6 md:gap-8 py-4"
       >
         <div className="w-full flex flex-col items-center gap-2">
           {isSettingUp && (
@@ -272,14 +273,14 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center gap-1.5 pt-1">
+        <div className="w-full flex flex-col items-center gap-1.5 pt-4">
           <Button
             variant="ghost"
-            size="sm"
-            className="text-muted-foreground flex items-center gap-2 text-xs sm:text-sm md:text-base h-9 sm:h-10 md:h-12 px-4 sm:px-6 rounded-full hover:bg-muted/50"
+            size="lg"
+            className="text-muted-foreground flex items-center gap-2 text-sm sm:text-base md:text-lg h-12 sm:h-14 md:h-16 px-6 sm:px-8 rounded-full hover:bg-muted/50"
             onClick={handleFingerprintUnlock}
           >
-            <Fingerprint className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 shrink-0" />
+            <Fingerprint className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 shrink-0" />
             {t('use_fingerprint')}
           </Button>
 
@@ -287,7 +288,7 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="text-[10px] sm:text-xs md:text-sm text-muted-foreground/70 hover:text-muted-foreground transition-colors underline underline-offset-2 cursor-pointer py-1"
+                className="text-xs sm:text-sm md:text-base text-muted-foreground/70 hover:text-muted-foreground transition-colors underline underline-offset-2 cursor-pointer py-3 mt-2"
               >
                 {t('privacy_terms')}
               </button>

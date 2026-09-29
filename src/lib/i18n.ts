@@ -2,8 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const resources = {
-  en: {
-    translation: {
+  "en": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Search library...",
       "sort_by": "Sort by",
@@ -89,11 +89,30 @@ const resources = {
       "privacy_point_4": "No Tracking or Analytics: This application contains no ad trackers, analytics tools, or third-party telemetry.",
       "change_image": "Change Image",
       "bg_updated": "Background updated",
-      "bg_removed": "Background removed"
+      "bg_removed": "Background removed",
+      "sort_author": "Author",
+      "sort_parody": "Parody / Category",
+      "auto_lock": "Auto-Lock Library",
+      "auto_lock_never": "Never",
+      "auto_lock_minimize": "Immediately upon minimize",
+      "auto_lock_1m": "1 minute",
+      "auto_lock_2m": "2 minutes",
+      "auto_lock_5m": "5 minutes",
+      "auto_lock_10m": "10 minutes",
+      "auto_lock_30m": "30 minutes",
+      "export_mode_desc": "Choose an export mode. For large libraries (hundreds or thousands of items), the Metadata Only backup is recommended for small file size and fast sharing.",
+      "export_compact_title": "Compact Backup (Metadata Only)",
+      "export_compact_desc": "Lightweight JSON file (~100KB for 1,000 books). Fast & efficient.",
+      "export_full_title": "Full Archive (With Cover Images)",
+      "export_full_desc": "Includes full base64 cover images for complete offline backup.",
+      "import_new_desc": "Import books from a JSON backup file or scan a library QR code directly using your camera.",
+      "scan_qr_import": "Scan QR Code to Import",
+      "or_upload_file": "OR UPLOAD FILE",
+      "settings_updated": "Settings updated!"
     }
   },
-  ja: {
-    translation: {
+  "ja": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "ライブラリを検索...",
       "sort_by": "並び替え",
@@ -170,11 +189,39 @@ const resources = {
       "bg_dim": "背景の暗さ調整",
       "change_image": "画像を変更",
       "bg_updated": "背景を更新しました",
-      "bg_removed": "背景を削除しました"
+      "bg_removed": "背景を削除しました",
+      "sort_author": "作者",
+      "sort_parody": "パロディ / カテゴリ",
+      "auto_lock": "ライブラリの自動ロック",
+      "auto_lock_never": "しない",
+      "auto_lock_minimize": "最小化時にすぐ",
+      "auto_lock_1m": "1分",
+      "auto_lock_2m": "2分",
+      "auto_lock_5m": "5分",
+      "auto_lock_10m": "10分",
+      "auto_lock_30m": "30分",
+      "export_mode_desc": "エクスポートモードを選択してください。大規模なライブラリの場合は、ファイルサイズが小さく共有が早い「メタデータのみ」のバックアップを推奨します。",
+      "export_compact_title": "コンパクトバックアップ（メタデータのみ）",
+      "export_compact_desc": "軽量なJSONファイル（1000冊で約100KB）。高速で効率的です。",
+      "export_full_title": "完全なアーカイブ（表紙画像付き）",
+      "export_full_desc": "完全なオフラインバックアップのためのbase64形式の表紙画像を含みます。",
+      "import_new_desc": "JSONバックアップファイルから本をインポートするか、カメラを使ってライブラリのQRコードを直接スキャンします。",
+      "scan_qr_import": "QRコードをスキャンしてインポート",
+      "or_upload_file": "またはファイルをアップロード",
+      "privacy_terms": "フリーウェアライセンスとプライバシーポリシー",
+      "freeware_title": "フリーウェアライセンスとプライバシーポリシー",
+      "freeware_license": "フリーウェアライセンス",
+      "freeware_desc": "Dolibは、いかなる種類の保証もない「現状有姿」で提供されるフリーソフトウェアです。個人的なライブラリを自由に使用、共有、バックアップする許可が与えられます。",
+      "privacy_policy": "プライバシーとオフラインポリシー",
+      "privacy_point_1": "100%ローカルストレージ：すべての本のタイトル、メタデータ、写真、カスタム背景、ロック設定は、デバイスのローカルストレージ内に保持されます。",
+      "privacy_point_2": "データ送信ゼロ：Dolibは、外部サーバーやクラウドサービスにユーザーデータを送信、アップロード、同期、または送信しません。",
+      "privacy_point_3": "カメラの使用：カメラへのアクセスは、バーコード/ISBNのスキャンと本の表紙の撮影のためにスマホ上でローカルにのみ使用されます。動画や写真がデバイスから出ることはありません。",
+      "privacy_point_4": "追跡や分析なし：このアプリケーションには、広告トラッカー、分析ツール、サードパーティのテレメトリは含まれていません。",
+      "settings_updated": "設定を更新しました！"
     }
   },
-  es: {
-    translation: {
+  "es": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Buscar en la biblioteca...",
       "sort_by": "Ordenar por",
@@ -251,11 +298,39 @@ const resources = {
       "bg_dim": "Atenuación del fondo",
       "change_image": "Cambiar imagen",
       "bg_updated": "Fondo actualizado",
-      "bg_removed": "Fondo eliminado"
+      "bg_removed": "Fondo eliminado",
+      "sort_author": "Autor",
+      "sort_parody": "Parodia / Categoría",
+      "auto_lock": "Bloqueo automático",
+      "auto_lock_never": "Nunca",
+      "auto_lock_minimize": "Inmediatamente al minimizar",
+      "auto_lock_1m": "1 minuto",
+      "auto_lock_2m": "2 minutos",
+      "auto_lock_5m": "5 minutos",
+      "auto_lock_10m": "10 minutos",
+      "auto_lock_30m": "30 minutos",
+      "export_mode_desc": "Elija un modo de exportación. Para bibliotecas grandes, se recomienda la copia de seguridad de Solo Metadatos por su tamaño reducido y rapidez.",
+      "export_compact_title": "Copia de seguridad compacta (Solo metadatos)",
+      "export_compact_desc": "Archivo JSON ligero (~100KB por 1000 libros). Rápido y eficiente.",
+      "export_full_title": "Archivo completo (Con portadas)",
+      "export_full_desc": "Incluye las imágenes de portada en base64 para una copia de seguridad sin conexión completa.",
+      "import_new_desc": "Importe libros desde un archivo de copia de seguridad JSON o escanee un código QR directamente con su cámara.",
+      "scan_qr_import": "Escanear código QR para importar",
+      "or_upload_file": "O SUBIR ARCHIVO",
+      "privacy_terms": "Licencia de freeware y política de privacidad",
+      "freeware_title": "Licencia de freeware y política de privacidad",
+      "freeware_license": "Licencia de freeware",
+      "freeware_desc": "Dolib es software gratuito que se proporciona \"tal cual\" sin garantía de ningún tipo. Se le concede permiso para usar, compartir y realizar copias de seguridad de su biblioteca personal libremente.",
+      "privacy_policy": "Política de privacidad y sin conexión",
+      "privacy_point_1": "Almacenamiento 100% local: todos los títulos de libros, metadatos, fotos, fondos personalizados y configuraciones de bloqueo permanecen en el almacenamiento local de su dispositivo.",
+      "privacy_point_2": "Cero transmisión de datos: Dolib no envía, carga, sincroniza ni transmite ningún dato del usuario a servidores externos o servicios en la nube.",
+      "privacy_point_3": "Uso de la cámara: el acceso a la cámara se usa estrictamente a nivel local en su teléfono para escanear códigos de barras/ISBN y tomar fotos de portadas. Ningún video o foto sale de su dispositivo.",
+      "privacy_point_4": "Sin seguimiento ni análisis: esta aplicación no contiene rastreadores de anuncios, herramientas de análisis ni telemetría de terceros.",
+      "settings_updated": "¡Ajustes actualizados!"
     }
   },
-  zh: {
-    translation: {
+  "zh": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "搜索库...",
       "sort_by": "排序方式",
@@ -332,11 +407,39 @@ const resources = {
       "bg_dim": "背景遮罩亮度",
       "change_image": "更改图片",
       "bg_updated": "背景已更新",
-      "bg_removed": "背景已移除"
+      "bg_removed": "背景已移除",
+      "sort_author": "作者",
+      "sort_parody": "同人 / 类别",
+      "auto_lock": "自动锁定库",
+      "auto_lock_never": "从不",
+      "auto_lock_minimize": "最小化时立即",
+      "auto_lock_1m": "1分钟",
+      "auto_lock_2m": "2分钟",
+      "auto_lock_5m": "5分钟",
+      "auto_lock_10m": "10分钟",
+      "auto_lock_30m": "30分钟",
+      "export_mode_desc": "选择导出模式。对于大型库，建议使用“仅元数据”备份，以减小文件大小并加快共享速度。",
+      "export_compact_title": "紧凑备份（仅元数据）",
+      "export_compact_desc": "轻量级 JSON 文件（1000本书约100KB）。快速高效。",
+      "export_full_title": "完整存档（含封面图像）",
+      "export_full_desc": "包含完整的 base64 封面图像，用于完整的离线备份。",
+      "import_new_desc": "从 JSON 备份文件导入书籍，或直接使用相机扫描库 QR 码。",
+      "scan_qr_import": "扫描二维码导入",
+      "or_upload_file": "或上传文件",
+      "privacy_terms": "免费软件许可和隐私政策",
+      "freeware_title": "免费软件许可和隐私政策",
+      "freeware_license": "免费软件许可",
+      "freeware_desc": "Dolib 是一款“按原样”提供的免费软件，没有任何形式的保证。我们授权您自由使用、共享和备份您的个人库。",
+      "privacy_policy": "隐私和离线政策",
+      "privacy_point_1": "100% 本地存储：所有书名、元数据、照片、自定义背景和锁定设置都保留在您设备的本地存储中。",
+      "privacy_point_2": "零数据传输：Dolib 不会向外部服务器或云服务发送、上传、同步或传输任何用户数据。",
+      "privacy_point_3": "相机使用：相机访问权限严格用于本地扫描条形码/ISBN和拍摄书籍封面。视频或照片绝不会离开您的设备。",
+      "privacy_point_4": "无跟踪或分析：此应用程序不包含广告跟踪器、分析工具或第三方遥测。",
+      "settings_updated": "设置已更新！"
     }
   },
-  fr: {
-    translation: {
+  "fr": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Rechercher dans la bibliothèque...",
       "sort_by": "Trier par",
@@ -413,11 +516,39 @@ const resources = {
       "bg_dim": "Assombrissement",
       "change_image": "Changer l'image",
       "bg_updated": "Arrière-plan mis à jour",
-      "bg_removed": "Arrière-plan supprimé"
+      "bg_removed": "Arrière-plan supprimé",
+      "sort_author": "Auteur",
+      "sort_parody": "Parodie / Catégorie",
+      "auto_lock": "Verrouillage auto",
+      "auto_lock_never": "Jamais",
+      "auto_lock_minimize": "Immédiatement",
+      "auto_lock_1m": "1 minute",
+      "auto_lock_2m": "2 minutes",
+      "auto_lock_5m": "5 minutes",
+      "auto_lock_10m": "10 minutes",
+      "auto_lock_30m": "30 minutes",
+      "export_mode_desc": "Choisissez un mode d'exportation. Pour les grandes bibliothèques, la sauvegarde Métadonnées Uniquement est recommandée pour sa taille réduite.",
+      "export_compact_title": "Sauvegarde compacte (Métadonnées uniquement)",
+      "export_compact_desc": "Fichier JSON léger (~100Ko pour 1000 livres). Rapide et efficace.",
+      "export_full_title": "Archive complète (Avec images de couverture)",
+      "export_full_desc": "Inclut les images de couverture en base64 pour une sauvegarde hors ligne complète.",
+      "import_new_desc": "Importez des livres à partir d'un fichier de sauvegarde JSON ou scannez directement un code QR avec votre caméra.",
+      "scan_qr_import": "Scanner un code QR pour importer",
+      "or_upload_file": "OU TÉLÉCHARGER UN FICHIER",
+      "privacy_terms": "Licence de logiciel gratuit et politique de confidentialité",
+      "freeware_title": "Licence de logiciel gratuit et politique de confidentialité",
+      "freeware_license": "Licence de logiciel gratuit",
+      "freeware_desc": "Dolib est un logiciel gratuit fourni \"en l'état\" sans aucune garantie. Vous êtes autorisé à utiliser, partager et sauvegarder librement votre bibliothèque personnelle.",
+      "privacy_policy": "Politique de confidentialité et hors ligne",
+      "privacy_point_1": "Stockage 100% local : Tous les titres de livres, métadonnées, photos, arrière-plans personnalisés et paramètres de verrouillage restent sur votre appareil dans le stockage local.",
+      "privacy_point_2": "Aucune transmission de données : Dolib n'envoie, ne télécharge, ne synchronise ni ne transmet aucune donnée utilisateur vers des serveurs externes ou des services cloud.",
+      "privacy_point_3": "Utilisation de la caméra : L'accès à la caméra est strictement utilisé localement sur votre téléphone pour scanner les codes-barres/ISBN et prendre des photos des couvertures. Aucune vidéo ou photo ne quitte votre appareil.",
+      "privacy_point_4": "Aucun suivi ni analyse : Cette application ne contient aucun traceur publicitaire, outil d'analyse ou télémétrie tierce.",
+      "settings_updated": "Paramètres mis à jour !"
     }
   },
-  de: {
-    translation: {
+  "de": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Bibliothek durchsuchen...",
       "sort_by": "Sortieren nach",
@@ -494,11 +625,39 @@ const resources = {
       "bg_dim": "Hintergrund-Dimmung",
       "change_image": "Bild ändern",
       "bg_updated": "Hintergrund aktualisiert",
-      "bg_removed": "Hintergrund entfernt"
+      "bg_removed": "Hintergrund entfernt",
+      "sort_author": "Autor",
+      "sort_parody": "Parodie / Kategorie",
+      "auto_lock": "Automatisch sperren",
+      "auto_lock_never": "Nie",
+      "auto_lock_minimize": "Sofort beim Minimieren",
+      "auto_lock_1m": "1 Minute",
+      "auto_lock_2m": "2 Minuten",
+      "auto_lock_5m": "5 Minuten",
+      "auto_lock_10m": "10 Minuten",
+      "auto_lock_30m": "30 Minuten",
+      "export_mode_desc": "Wählen Sie einen Exportmodus. Für große Bibliotheken wird das Nur-Metadaten-Backup empfohlen, da es klein und schnell zu teilen ist.",
+      "export_compact_title": "Kompaktes Backup (Nur Metadaten)",
+      "export_compact_desc": "Leichte JSON-Datei (~100KB für 1000 Bücher). Schnell & effizient.",
+      "export_full_title": "Vollständiges Archiv (Mit Coverbildern)",
+      "export_full_desc": "Enthält vollständige Base64-Coverbilder für ein komplettes Offline-Backup.",
+      "import_new_desc": "Importieren Sie Bücher aus einer JSON-Backup-Datei oder scannen Sie einen Bibliotheks-QR-Code direkt mit Ihrer Kamera.",
+      "scan_qr_import": "QR-Code scannen zum Importieren",
+      "or_upload_file": "ODER DATEI HOCHLADEN",
+      "privacy_terms": "Freeware-Lizenz & Datenschutzrichtlinie",
+      "freeware_title": "Freeware-Lizenz & Datenschutzrichtlinie",
+      "freeware_license": "Freeware-Lizenz",
+      "freeware_desc": "Dolib ist kostenlose Software, die ohne jegliche Gewährleistung \"wie besehen\" zur Verfügung gestellt wird. Sie haben die Erlaubnis, Ihre persönliche Bibliothek frei zu nutzen, zu teilen und zu sichern.",
+      "privacy_policy": "Datenschutz- und Offline-Richtlinie",
+      "privacy_point_1": "100% lokaler Speicher: Alle Buchtitel, Metadaten, Fotos, benutzerdefinierten Hintergründe und Sperreinstellungen bleiben in der lokalen Speicherung Ihres Geräts.",
+      "privacy_point_2": "Null Datenübertragung: Dolib sendet, lädt, synchronisiert oder überträgt keine Benutzerdaten auf externe Server oder Cloud-Dienste.",
+      "privacy_point_3": "Kameranutzung: Der Kamerazugriff wird auf Ihrem Telefon ausschließlich lokal zum Scannen von Barcodes/ISBNs und Fotografieren von Buchumschlägen verwendet. Weder Videos noch Fotos verlassen Ihr Gerät.",
+      "privacy_point_4": "Kein Tracking oder Analytics: Diese Anwendung enthält keine Werbe-Tracker, Analyse-Tools oder Telemetrie von Drittanbietern.",
+      "settings_updated": "Einstellungen aktualisiert!"
     }
   },
-  ko: {
-    translation: {
+  "ko": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "라이브러리 검색...",
       "sort_by": "정렬 기준",
@@ -575,11 +734,39 @@ const resources = {
       "bg_dim": "배경 어둡기",
       "change_image": "이미지 변경",
       "bg_updated": "배경이 업데이트되었습니다",
-      "bg_removed": "배경이 제거되었습니다"
+      "bg_removed": "배경이 제거되었습니다",
+      "sort_author": "작가",
+      "sort_parody": "패러디 / 카테고리",
+      "auto_lock": "자동 잠금",
+      "auto_lock_never": "사용 안 함",
+      "auto_lock_minimize": "최소화 시 즉시",
+      "auto_lock_1m": "1분",
+      "auto_lock_2m": "2분",
+      "auto_lock_5m": "5분",
+      "auto_lock_10m": "10분",
+      "auto_lock_30m": "30분",
+      "export_mode_desc": "내보내기 모드를 선택하세요. 대규모 라이브러리의 경우 파일 크기가 작고 공유가 빠른 메타데이터 전용 백업을 권장합니다.",
+      "export_compact_title": "컴팩트 백업 (메타데이터 전용)",
+      "export_compact_desc": "가벼운 JSON 파일 (책 1000권에 약 100KB). 빠르고 효율적입니다.",
+      "export_full_title": "전체 아카이브 (표지 이미지 포함)",
+      "export_full_desc": "완전한 오프라인 백업을 위한 전체 base64 표지 이미지를 포함합니다.",
+      "import_new_desc": "JSON 백업 파일에서 책을 가져오거나 카메라를 사용하여 라이브러리 QR 코드를 직접 스캔합니다.",
+      "scan_qr_import": "QR 코드를 스캔하여 가져오기",
+      "or_upload_file": "또는 파일 업로드",
+      "privacy_terms": "프리웨어 라이선스 및 개인정보 보호정책",
+      "freeware_title": "프리웨어 라이선스 및 개인정보 보호정책",
+      "freeware_license": "프리웨어 라이선스",
+      "freeware_desc": "Dolib은 어떠한 형태의 보증도 없이 \"있는 그대로\" 제공되는 무료 소프트웨어입니다. 개인 라이브러리를 자유롭게 사용, 공유 및 백업할 수 있는 권한이 부여됩니다.",
+      "privacy_policy": "개인정보 보호 및 오프라인 정책",
+      "privacy_point_1": "100% 로컬 스토리지: 모든 책 제목, 메타데이터, 사진, 사용자 지정 배경 및 잠금 설정은 장치의 로컬 스토리지 내에 유지됩니다.",
+      "privacy_point_2": "데이터 전송 제로: Dolib은 외부 서버나 클라우드 서비스에 사용자 데이터를 보내거나, 업로드하거나, 동기화하거나, 전송하지 않습니다.",
+      "privacy_point_3": "카메라 사용: 카메라 액세스는 휴대폰에서 바코드/ISBN 스캔 및 책 표지 촬영을 위해 로컬에서만 엄격하게 사용됩니다. 비디오나 사진은 절대 기기를 벗어나지 않습니다.",
+      "privacy_point_4": "추적 또는 분석 없음: 이 애플리케이션에는 광고 추적기, 분석 도구 또는 타사 원격 측정 데이터가 포함되어 있지 않습니다.",
+      "settings_updated": "설정이 업데이트되었습니다!"
     }
   },
-  pt: {
-    translation: {
+  "pt": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Pesquisar biblioteca...",
       "sort_by": "Ordenar por",
@@ -656,11 +843,39 @@ const resources = {
       "bg_dim": "Escurecimento do fundo",
       "change_image": "Alterar imagem",
       "bg_updated": "Plano de fundo atualizado",
-      "bg_removed": "Plano de fundo removido"
+      "bg_removed": "Plano de fundo removido",
+      "sort_author": "Autor",
+      "sort_parody": "Paródia / Categoria",
+      "auto_lock": "Bloqueio automático",
+      "auto_lock_never": "Nunca",
+      "auto_lock_minimize": "Ao minimizar",
+      "auto_lock_1m": "1 minuto",
+      "auto_lock_2m": "2 minutos",
+      "auto_lock_5m": "5 minutos",
+      "auto_lock_10m": "10 minutos",
+      "auto_lock_30m": "30 minutos",
+      "export_mode_desc": "Escolha um modo de exportação. Para bibliotecas grandes, o backup Apenas Metadados é recomendado pelo tamanho reduzido.",
+      "export_compact_title": "Backup compacto (Apenas metadados)",
+      "export_compact_desc": "Arquivo JSON leve (~100KB para 1000 livros). Rápido e eficiente.",
+      "export_full_title": "Arquivo completo (Com imagens de capa)",
+      "export_full_desc": "Inclui imagens de capa em base64 completas para backup offline total.",
+      "import_new_desc": "Importe livros de um arquivo de backup JSON ou escaneie um código QR diretamente com sua câmera.",
+      "scan_qr_import": "Escanear código QR para importar",
+      "or_upload_file": "OU ENVIAR ARQUIVO",
+      "privacy_terms": "Licença Freeware e Política de Privacidade",
+      "freeware_title": "Licença Freeware e Política de Privacidade",
+      "freeware_license": "Licença Freeware",
+      "freeware_desc": "O Dolib é um software gratuito fornecido \"como está\", sem garantia de qualquer tipo. É-lhe concedida permissão para usar, partilhar e fazer backup da sua biblioteca pessoal livremente.",
+      "privacy_policy": "Política de Privacidade e Offline",
+      "privacy_point_1": "Armazenamento 100% local: Todos os títulos de livros, metadados, fotos, fundos personalizados e configurações de bloqueio permanecem no armazenamento local do seu dispositivo.",
+      "privacy_point_2": "Zero Transmissão de Dados: O Dolib não envia, faz upload, sincroniza ou transmite quaisquer dados do utilizador para servidores externos ou serviços cloud.",
+      "privacy_point_3": "Utilização da Câmara: O acesso à câmara é estritamente usado localmente no seu telemóvel para digitalizar códigos de barras/ISBN e tirar fotos das capas dos livros. Nenhum vídeo ou foto sai do seu dispositivo.",
+      "privacy_point_4": "Sem Rastreamento ou Analytics: Esta aplicação não contém rastreadores de anúncios, ferramentas de análise ou telemetria de terceiros.",
+      "settings_updated": "Configurações atualizadas!"
     }
   },
-  it: {
-    translation: {
+  "it": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Cerca nella libreria...",
       "sort_by": "Ordina per",
@@ -737,11 +952,39 @@ const resources = {
       "bg_dim": "Oscuramento dello sfondo",
       "change_image": "Cambia immagine",
       "bg_updated": "Sfondo aggiornato",
-      "bg_removed": "Sfondo rimosso"
+      "bg_removed": "Sfondo rimosso",
+      "sort_author": "Autore",
+      "sort_parody": "Parodia / Categoria",
+      "auto_lock": "Blocco automatico",
+      "auto_lock_never": "Mai",
+      "auto_lock_minimize": "Alla riduzione",
+      "auto_lock_1m": "1 minuto",
+      "auto_lock_2m": "2 minuti",
+      "auto_lock_5m": "5 minuti",
+      "auto_lock_10m": "10 minuti",
+      "auto_lock_30m": "30 minuti",
+      "export_mode_desc": "Scegli una modalità di esportazione. Per librerie grandi, si consiglia il backup Solo Metadati per le dimensioni ridotte e la condivisione rapida.",
+      "export_compact_title": "Backup compatto (Solo metadati)",
+      "export_compact_desc": "File JSON leggero (~100KB per 1000 libri). Veloce ed efficiente.",
+      "export_full_title": "Archivio completo (Con immagini di copertina)",
+      "export_full_desc": "Include immagini di copertina in base64 per un backup offline completo.",
+      "import_new_desc": "Importa libri da un file di backup JSON o scansiona un codice QR direttamente con la tua fotocamera.",
+      "scan_qr_import": "Scansiona codice QR per importare",
+      "or_upload_file": "O CARICA FILE",
+      "privacy_terms": "Licenza Freeware e Informativa sulla Privacy",
+      "freeware_title": "Licenza Freeware e Informativa sulla Privacy",
+      "freeware_license": "Licenza Freeware",
+      "freeware_desc": "Dolib è un software gratuito fornito \"così com'è\" senza garanzie di alcun tipo. Ti è concesso il permesso di utilizzare, condividere e fare il backup della tua libreria personale liberamente.",
+      "privacy_policy": "Informativa sulla privacy e offline",
+      "privacy_point_1": "Archiviazione 100% locale: Tutti i titoli dei libri, metadati, foto, sfondi personalizzati e impostazioni di blocco rimangono sul tuo dispositivo nello spazio di archiviazione locale.",
+      "privacy_point_2": "Nessuna trasmissione dati: Dolib non invia, carica, sincronizza o trasmette alcun dato dell'utente a server esterni o servizi cloud.",
+      "privacy_point_3": "Utilizzo fotocamera: L'accesso alla fotocamera viene utilizzato esclusivamente a livello locale sul telefono per scansionare codici a barre/ISBN e fotografare le copertine dei libri. Nessun video o foto lascia mai il tuo dispositivo.",
+      "privacy_point_4": "Nessun tracciamento o analisi: Questa applicazione non contiene tracciatori pubblicitari, strumenti di analisi o telemetria di terze parti.",
+      "settings_updated": "Impostazioni aggiornate!"
     }
   },
-  ru: {
-    translation: {
+  "ru": {
+    "translation": {
       "app_name": "Dolib",
       "search_placeholder": "Поиск по библиотеке...",
       "sort_by": "Сортировать по",
@@ -818,7 +1061,35 @@ const resources = {
       "bg_dim": "Затемнение фона",
       "change_image": "Изменить изображение",
       "bg_updated": "Фон обновлен",
-      "bg_removed": "Фон удален"
+      "bg_removed": "Фон удален",
+      "sort_author": "Автор",
+      "sort_parody": "Пародия / Категория",
+      "auto_lock": "Автоблокировка",
+      "auto_lock_never": "Никогда",
+      "auto_lock_minimize": "При сворачивании",
+      "auto_lock_1m": "1 минута",
+      "auto_lock_2m": "2 минуты",
+      "auto_lock_5m": "5 минут",
+      "auto_lock_10m": "10 минут",
+      "auto_lock_30m": "30 минут",
+      "export_mode_desc": "Выберите режим экспорта. Для больших библиотек рекомендуется резервная копия «Только метаданные» из-за небольшого размера.",
+      "export_compact_title": "Компактная резервная копия (только метаданные)",
+      "export_compact_desc": "Легкий JSON-файл (~100 КБ на 1000 книг). Быстро и эффективно.",
+      "export_full_title": "Полный архив (с обложками)",
+      "export_full_desc": "Включает полные изображения обложек в формате base64 для полного автономного резервного копирования.",
+      "import_new_desc": "Импортируйте книги из файла резервной копии JSON или отсканируйте QR-код напрямую с помощью камеры.",
+      "scan_qr_import": "Сканировать QR-код для импорта",
+      "or_upload_file": "ИЛИ ЗАГРУЗИТЬ ФАЙЛ",
+      "privacy_terms": "Лицензия Freeware и Политика конфиденциальности",
+      "freeware_title": "Лицензия Freeware и Политика конфиденциальности",
+      "freeware_license": "Лицензия Freeware",
+      "freeware_desc": "Dolib — это бесплатное программное обеспечение, предоставляемое «как есть» без каких-либо гарантий. Вы получаете разрешение свободно использовать, делиться и создавать резервные копии своей личной библиотеки.",
+      "privacy_policy": "Политика конфиденциальности и автономной работы",
+      "privacy_point_1": "100% локальное хранение: все названия книг, метаданные, фотографии, пользовательские фоны и настройки блокировки остаются на вашем устройстве в локальном хранилище.",
+      "privacy_point_2": "Нулевая передача данных: Dolib не отправляет, не загружает, не синхронизирует и не передает какие-либо пользовательские данные на внешние серверы или в облачные сервисы.",
+      "privacy_point_3": "Использование камеры: доступ к камере используется строго локально на вашем телефоне для сканирования штрих-кодов/ISBN и фотографирования обложек книг. Видео и фотографии никогда не покидают ваше устройство.",
+      "privacy_point_4": "Отсутствие отслеживания и аналитики: это приложение не содержит рекламных трекеров, аналитических инструментов или телеметрии сторонних разработчиков.",
+      "settings_updated": "Настройки обновлены!"
     }
   }
 };

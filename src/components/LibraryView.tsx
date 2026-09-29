@@ -70,7 +70,7 @@ export function LibraryView() {
   const [newPasscode, setNewPasscode] = useState('');
   const [confirmPasscode, setConfirmPasscode] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [sortBy, setSortBy] = useState<'date' | 'alpha' | 'duplicates'>('date');
+  const [sortBy, setSortBy] = useState<'date' | 'alpha' | 'duplicates' | 'author' | 'parody'>('date');
   const [showBgCamera, setShowBgCamera] = useState(false);
   const [showQrScanner, setShowQrScanner] = useState(false);
   const [sliderDim, setSliderDim] = useState<number | null>(null);
@@ -244,6 +244,10 @@ export function LibraryView() {
       });
     } else if (sortBy === 'alpha') {
       result.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === 'author') {
+      result.sort((a, b) => a.author.localeCompare(b.author));
+    } else if (sortBy === 'parody') {
+      result.sort((a, b) => (a.parody || '').localeCompare(b.parody || ''));
     } else {
       result.sort((a, b) => b.addedAt - a.addedAt);
     }
@@ -460,10 +464,14 @@ export function LibraryView() {
                     {sortBy === 'date' && <Calendar className="w-4 h-4" />}
                     {sortBy === 'alpha' && <SortAsc className="w-4 h-4" />}
                     {sortBy === 'duplicates' && <Copy className="w-4 h-4" />}
+                    {sortBy === 'author' && <SortAsc className="w-4 h-4" />}
+                    {sortBy === 'parody' && <FolderOpen className="w-4 h-4" />}
                     <span>
                       {sortBy === 'date' && t('sort_date')}
                       {sortBy === 'alpha' && t('sort_alpha')}
                       {sortBy === 'duplicates' && t('sort_duplicates')}
+                      {sortBy === 'author' && t('sort_author', 'Author')}
+                      {sortBy === 'parody' && t('sort_parody', 'Parody/Category')}
                     </span>
                   </div>
                 </SelectValue>
@@ -479,6 +487,18 @@ export function LibraryView() {
                   <div className="flex items-center gap-2">
                     <SortAsc className="w-4 h-4" />
                     <span>{t('sort_alpha')}</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="author">
+                  <div className="flex items-center gap-2">
+                    <SortAsc className="w-4 h-4" />
+                    <span>{t('sort_author', 'Author')}</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="parody">
+                  <div className="flex items-center gap-2">
+                    <FolderOpen className="w-4 h-4" />
+                    <span>{t('sort_parody', 'Parody')}</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="duplicates">
@@ -555,28 +575,7 @@ export function LibraryView() {
               <DialogTitle>{t('settings')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6 pt-2 pb-3">
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium">{t('security')}</h3>
-                <div className="space-y-2">
-                  <Input
-                    type="password"
-                    placeholder={t('passcode_lock')}
-                    maxLength={6}
-                    value={newPasscode}
-                    onChange={(e) => setNewPasscode(e.target.value.replace(/\D/g, ''))}
-                  />
-                  <Input
-                    type="password"
-                    placeholder={t('confirm_passcode')}
-                    maxLength={6}
-                    value={confirmPasscode}
-                    onChange={(e) => setConfirmPasscode(e.target.value.replace(/\D/g, ''))}
-                  />
-                  <Button className="w-full" onClick={handleUpdatePasscode}>
-                    {t('update')} {t('passcode_lock')}
-                  </Button>
-                </div>
-              </div>
+              
 
               <div className="space-y-4">
                 <h3 className="text-sm font-medium">{t('language')}</h3>
@@ -750,6 +749,62 @@ export function LibraryView() {
                 </div>
               </div>
 
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium">{t('security')}</h3>
+                <div className="space-y-2">
+                  <Input
+                    type="password"
+                    placeholder={t('passcode_lock')}
+                    maxLength={6}
+                    value={newPasscode}
+                    onChange={(e) => setNewPasscode(e.target.value.replace(/\D/g, ''))}
+                  />
+                  <Input
+                    type="password"
+                    placeholder={t('confirm_passcode')}
+                    maxLength={6}
+                    value={confirmPasscode}
+                    onChange={(e) => setConfirmPasscode(e.target.value.replace(/\D/g, ''))}
+                  />
+                  <Button className="w-full" onClick={handleUpdatePasscode}>
+                    {t('update')} {t('passcode_lock')}
+                  </Button>
+                </div>
+
+                  <div className="pt-4 border-t border-border/40 space-y-2">
+                    <p className="text-sm font-medium">{t('auto_lock', 'Auto-Lock Library')}</p>
+                    <Select
+                      value={settings?.autoLockTime?.toString() || '-1'}
+                      onValueChange={(v) => {
+                      db.settings.update('main', { autoLockTime: parseInt(v) });
+                      toast.success(t('settings_updated', 'Settings updated!'));
+                    }}
+                    >
+                      <SelectTrigger className="w-full h-11 bg-muted/30">
+                        <SelectValue>
+                          {settings?.autoLockTime === 0 && t('auto_lock_never', 'Never')}
+                          {(settings?.autoLockTime === undefined || settings?.autoLockTime === -1) && t('auto_lock_minimize', 'Immediately upon minimize')}
+                          {settings?.autoLockTime === 60000 && t('auto_lock_1m', '1 minute')}
+                          {settings?.autoLockTime === 120000 && t('auto_lock_2m', '2 minutes')}
+                          {settings?.autoLockTime === 300000 && t('auto_lock_5m', '5 minutes')}
+                          {settings?.autoLockTime === 600000 && t('auto_lock_10m', '10 minutes')}
+                          {settings?.autoLockTime === 1800000 && t('auto_lock_30m', '30 minutes')}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">{t('auto_lock_never', 'Never')}</SelectItem>
+                        <SelectItem value="-1">{t('auto_lock_minimize', 'Immediately upon minimize')}</SelectItem>
+                        <SelectItem value="60000">{t('auto_lock_1m', '1 minute')}</SelectItem>
+                        <SelectItem value="120000">{t('auto_lock_2m', '2 minutes')}</SelectItem>
+                        <SelectItem value="300000">{t('auto_lock_5m', '5 minutes')}</SelectItem>
+                        <SelectItem value="600000">{t('auto_lock_10m', '10 minutes')}</SelectItem>
+                        <SelectItem value="1800000">{t('auto_lock_30m', '30 minutes')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+              </div>
+
               <div className="pt-4 border-t space-y-2">
                 <h3 className="text-sm font-medium">{t('about')}</h3>
                 <div className="p-3 rounded-lg bg-muted/30 border border-dashed space-y-3">
@@ -858,23 +913,23 @@ export function LibraryView() {
             </DialogHeader>
             <div className="space-y-5 py-3">
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Choose an export mode. For large libraries (hundreds or thousands of items), the <strong>Metadata Only</strong> backup is recommended for small file size and fast sharing.
+                {t('export_mode_desc')}
               </p>
 
               <div className="grid grid-cols-1 gap-3">
                 <Button variant="outline" className="h-auto p-3 flex items-start gap-3 text-left justify-start" onClick={handleExportCompact}>
                   <FileJson className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-semibold text-xs">Compact Backup (Metadata Only)</div>
-                    <div className="text-[11px] text-muted-foreground font-normal">Lightweight JSON file (~100KB for 1,000 books). Fast & efficient.</div>
+                    <div className="font-semibold text-xs">{t('export_compact_title')}</div>
+                    <div className="text-[11px] text-muted-foreground font-normal">{t('export_compact_desc')}</div>
                   </div>
                 </Button>
 
                 <Button variant="outline" className="h-auto p-3 flex items-start gap-3 text-left justify-start" onClick={handleExportFull}>
                   <FileSpreadsheet className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-semibold text-xs">Full Archive (With Cover Images)</div>
-                    <div className="text-[11px] text-muted-foreground font-normal">Includes full base64 cover images for complete offline backup.</div>
+                    <div className="font-semibold text-xs">{t('export_full_title')}</div>
+                    <div className="text-[11px] text-muted-foreground font-normal">{t('export_full_desc')}</div>
                   </div>
                 </Button>
               </div>
@@ -908,7 +963,7 @@ export function LibraryView() {
             </DialogHeader>
             <div className="space-y-4 py-3">
               <p className="text-xs text-muted-foreground">
-                Import books from a JSON backup file or scan a library QR code directly using your camera.
+                {t('import_new_desc')}
               </p>
 
               <Button
@@ -920,7 +975,7 @@ export function LibraryView() {
                 }}
               >
                 <ScanLine className="w-4 h-4" />
-                <span>Scan QR Code to Import</span>
+                <span>{t('scan_qr_import')}</span>
               </Button>
 
               <div className="relative my-2">
@@ -928,7 +983,7 @@ export function LibraryView() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
-                  <span className="bg-popover px-2 text-muted-foreground">OR UPLOAD FILE</span>
+                  <span className="bg-popover px-2 text-muted-foreground">{t('or_upload_file')}</span>
                 </div>
               </div>
 

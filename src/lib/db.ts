@@ -21,6 +21,7 @@ export interface AppSettings {
   language?: string;
   customBackground?: string;
   backgroundDim?: number;
+  autoLockTime?: number; // 0 = never, -1 = immediate, otherwise ms
 }
 
 export class LibrisDatabase extends Dexie {
