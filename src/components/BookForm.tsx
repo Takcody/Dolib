@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Book, db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Camera, BookOpen, Save, Trash2, Scan, Copy, FolderOpen } from 'lucide-react';
 import { CameraCapture } from './CameraCapture';
@@ -27,7 +28,9 @@ export function BookForm({ book, onClose }: BookFormProps) {
   const [title, setTitle] = useState(book?.title || '');
   const [author, setAuthor] = useState(book?.author || '');
   const [barcode, setBarcode] = useState(book?.barcode || '');
+  const [circle, setCircle] = useState(book?.circle || '');
   const [parody, setParody] = useState(book?.parody || '');
+  const [isAnthology, setIsAnthology] = useState(book?.isAnthology || false);
   const [size, setSize] = useState(book?.size || 'A4');
   const [coverImage, setCoverImage] = useState(book?.coverImage || '');
   const [showCamera, setShowCamera] = useState(false);
@@ -111,8 +114,10 @@ export function BookForm({ book, onClose }: BookFormProps) {
       title,
       author,
       barcode,
+      circle,
       parody,
       size,
+      isAnthology,
       coverImage,
       addedAt: book?.addedAt || Date.now(),
     };
@@ -213,19 +218,19 @@ export function BookForm({ book, onClose }: BookFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="title" className="text-xs">{t('title')}</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('title')}
-              className="h-9 text-sm"
-              required
-            />
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="title" className="text-xs">{t('title')}</Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={t('title')}
+            className="h-9 text-sm"
+            required
+          />
+        </div>
 
+        <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label htmlFor="author" className="text-xs">{t('author')}</Label>
             <Input
@@ -235,6 +240,17 @@ export function BookForm({ book, onClose }: BookFormProps) {
               placeholder={t('author')}
               className="h-9 text-sm"
               required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="circle" className="text-xs">{t('circle', 'Circle')}</Label>
+            <Input
+              id="circle"
+              value={circle}
+              onChange={(e) => setCircle(e.target.value)}
+              placeholder={t('circle', 'Circle')}
+              className="h-9 text-sm"
             />
           </div>
         </div>
@@ -250,9 +266,9 @@ export function BookForm({ book, onClose }: BookFormProps) {
                 placeholder={t('optional')}
                 className="flex-1 h-9 text-sm"
               />
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 size="icon"
                 className="h-9 w-9 shrink-0"
                 onClick={() => {
@@ -276,20 +292,39 @@ export function BookForm({ book, onClose }: BookFormProps) {
           </div>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="size" className="text-xs">{t('size')}</Label>
-          <Select value={size} onValueChange={setSize} modal={false}>
-            <SelectTrigger id="size" className="h-9 text-sm">
-              <SelectValue placeholder={t('size')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="A4">A4 (Standard)</SelectItem>
-              <SelectItem value="A5">A5 (Pocket)</SelectItem>
-              <SelectItem value="B5">B5 (Composition)</SelectItem>
-              <SelectItem value="Letter">Letter</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="size" className="text-xs">{t('size')}</Label>
+            <Select value={size} onValueChange={setSize} modal={false}>
+              <SelectTrigger id="size" className="w-full h-9 text-sm">
+                <SelectValue placeholder={t('size')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="A4">A4 (Standard)</SelectItem>
+                <SelectItem value="A5">A5 (Pocket)</SelectItem>
+                <SelectItem value="B5">B5 (Composition)</SelectItem>
+                <SelectItem value="Letter">Letter</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs opacity-0 select-none" aria-hidden="true">
+              {t('anthology', 'Anthology')}
+            </Label>
+            <div className="flex items-center h-9 pl-1">
+              <Checkbox
+                id="anthology"
+                checked={isAnthology}
+                onCheckedChange={(c) => setIsAnthology(!!c)}
+                className="mr-2"
+              />
+              <Label htmlFor="anthology" className="text-sm font-normal text-muted-foreground cursor-pointer select-none">
+                {t('anthology', 'Anthology')}
+              </Label>
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-3 pt-2">

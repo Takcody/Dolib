@@ -22,6 +22,8 @@ import {
   Camera,
   Trash2,
   FolderOpen,
+  Users,
+  BookOpen,
   Wallpaper,
   Sun,
   Moon,
@@ -70,7 +72,7 @@ export function LibraryView() {
   const [newPasscode, setNewPasscode] = useState('');
   const [confirmPasscode, setConfirmPasscode] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [sortBy, setSortBy] = useState<'date' | 'alpha' | 'duplicates' | 'author' | 'parody'>('date');
+  const [sortBy, setSortBy] = useState<'date' | 'alpha' | 'duplicates' | 'author' | 'circle' | 'parody' | 'anthology'>('date');
   const [showBgCamera, setShowBgCamera] = useState(false);
   const [showQrScanner, setShowQrScanner] = useState(false);
   const [sliderDim, setSliderDim] = useState<number | null>(null);
@@ -226,7 +228,8 @@ export function LibraryView() {
       book.title.toLowerCase().includes(query) ||
       book.author.toLowerCase().includes(query) ||
       book.barcode?.toLowerCase().includes(query) ||
-      book.parody?.toLowerCase().includes(query)
+      book.parody?.toLowerCase().includes(query) ||
+      book.circle?.toLowerCase().includes(query)
     );
 
     if (sortBy === 'duplicates') {
@@ -246,8 +249,13 @@ export function LibraryView() {
       result.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === 'author') {
       result.sort((a, b) => a.author.localeCompare(b.author));
+    } else if (sortBy === 'circle') {
+      result.sort((a, b) => (a.circle || '').localeCompare(b.circle || ''));
     } else if (sortBy === 'parody') {
       result.sort((a, b) => (a.parody || '').localeCompare(b.parody || ''));
+    } else if (sortBy === 'anthology') {
+      result = result.filter(book => book.isAnthology);
+      result.sort((a, b) => b.addedAt - a.addedAt); // sort anthologies by date
     } else {
       result.sort((a, b) => b.addedAt - a.addedAt);
     }
@@ -465,13 +473,17 @@ export function LibraryView() {
                     {sortBy === 'alpha' && <SortAsc className="w-4 h-4" />}
                     {sortBy === 'duplicates' && <Copy className="w-4 h-4" />}
                     {sortBy === 'author' && <SortAsc className="w-4 h-4" />}
+                    {sortBy === 'circle' && <Users className="w-4 h-4" />}
                     {sortBy === 'parody' && <FolderOpen className="w-4 h-4" />}
+                    {sortBy === 'anthology' && <BookOpen className="w-4 h-4" />}
                     <span>
                       {sortBy === 'date' && t('sort_date')}
                       {sortBy === 'alpha' && t('sort_alpha')}
                       {sortBy === 'duplicates' && t('sort_duplicates')}
                       {sortBy === 'author' && t('sort_author', 'Author')}
+                      {sortBy === 'circle' && t('sort_circle', 'Circle')}
                       {sortBy === 'parody' && t('sort_parody', 'Parody/Category')}
+                      {sortBy === 'anthology' && t('sort_anthology', 'Anthology')}
                     </span>
                   </div>
                 </SelectValue>
@@ -495,10 +507,22 @@ export function LibraryView() {
                     <span>{t('sort_author', 'Author')}</span>
                   </div>
                 </SelectItem>
+                <SelectItem value="circle">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    <span>{t('sort_circle', 'Circle')}</span>
+                  </div>
+                </SelectItem>
                 <SelectItem value="parody">
                   <div className="flex items-center gap-2">
                     <FolderOpen className="w-4 h-4" />
-                    <span>{t('sort_parody', 'Parody')}</span>
+                    <span>{t('sort_parody', 'Parody / Category')}</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="anthology">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" />
+                    <span>{t('sort_anthology', 'Anthology')}</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="duplicates">

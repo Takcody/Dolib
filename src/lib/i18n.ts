@@ -108,7 +108,11 @@ const resources = {
       "import_new_desc": "Import books from a JSON backup file or scan a library QR code directly using your camera.",
       "scan_qr_import": "Scan QR Code to Import",
       "or_upload_file": "OR UPLOAD FILE",
-      "settings_updated": "Settings updated!"
+      "settings_updated": "Settings updated!",
+      "circle": "Circle",
+      "sort_circle": "Circle",
+      "anthology": "Anthology",
+      "sort_anthology": "Anthology"
     }
   },
   "ja": {
@@ -217,7 +221,11 @@ const resources = {
       "privacy_point_2": "データ送信ゼロ：Dolibは、外部サーバーやクラウドサービスにユーザーデータを送信、アップロード、同期、または送信しません。",
       "privacy_point_3": "カメラの使用：カメラへのアクセスは、バーコード/ISBNのスキャンと本の表紙の撮影のためにスマホ上でローカルにのみ使用されます。動画や写真がデバイスから出ることはありません。",
       "privacy_point_4": "追跡や分析なし：このアプリケーションには、広告トラッカー、分析ツール、サードパーティのテレメトリは含まれていません。",
-      "settings_updated": "設定を更新しました！"
+      "settings_updated": "設定を更新しました！",
+      "circle": "サークル",
+      "sort_circle": "サークル",
+      "anthology": "アンソロジー",
+      "sort_anthology": "アンソロジー"
     }
   },
   "es": {
@@ -326,7 +334,11 @@ const resources = {
       "privacy_point_2": "Cero transmisión de datos: Dolib no envía, carga, sincroniza ni transmite ningún dato del usuario a servidores externos o servicios en la nube.",
       "privacy_point_3": "Uso de la cámara: el acceso a la cámara se usa estrictamente a nivel local en su teléfono para escanear códigos de barras/ISBN y tomar fotos de portadas. Ningún video o foto sale de su dispositivo.",
       "privacy_point_4": "Sin seguimiento ni análisis: esta aplicación no contiene rastreadores de anuncios, herramientas de análisis ni telemetría de terceros.",
-      "settings_updated": "¡Ajustes actualizados!"
+      "settings_updated": "¡Ajustes actualizados!",
+      "circle": "Círculo",
+      "sort_circle": "Círculo",
+      "anthology": "Antología",
+      "sort_anthology": "Antología"
     }
   },
   "zh": {
@@ -435,7 +447,11 @@ const resources = {
       "privacy_point_2": "零数据传输：Dolib 不会向外部服务器或云服务发送、上传、同步或传输任何用户数据。",
       "privacy_point_3": "相机使用：相机访问权限严格用于本地扫描条形码/ISBN和拍摄书籍封面。视频或照片绝不会离开您的设备。",
       "privacy_point_4": "无跟踪或分析：此应用程序不包含广告跟踪器、分析工具或第三方遥测。",
-      "settings_updated": "设置已更新！"
+      "settings_updated": "设置已更新！",
+      "circle": "社团",
+      "sort_circle": "社团",
+      "anthology": "合集",
+      "sort_anthology": "合集"
     }
   },
   "fr": {
@@ -544,7 +560,11 @@ const resources = {
       "privacy_point_2": "Aucune transmission de données : Dolib n'envoie, ne télécharge, ne synchronise ni ne transmet aucune donnée utilisateur vers des serveurs externes ou des services cloud.",
       "privacy_point_3": "Utilisation de la caméra : L'accès à la caméra est strictement utilisé localement sur votre téléphone pour scanner les codes-barres/ISBN et prendre des photos des couvertures. Aucune vidéo ou photo ne quitte votre appareil.",
       "privacy_point_4": "Aucun suivi ni analyse : Cette application ne contient aucun traceur publicitaire, outil d'analyse ou télémétrie tierce.",
-      "settings_updated": "Paramètres mis à jour !"
+      "settings_updated": "Paramètres mis à jour !",
+      "circle": "Cercle",
+      "sort_circle": "Cercle",
+      "anthology": "Anthologie",
+      "sort_anthology": "Anthologie"
     }
   },
   "de": {
@@ -653,7 +673,11 @@ const resources = {
       "privacy_point_2": "Null Datenübertragung: Dolib sendet, lädt, synchronisiert oder überträgt keine Benutzerdaten auf externe Server oder Cloud-Dienste.",
       "privacy_point_3": "Kameranutzung: Der Kamerazugriff wird auf Ihrem Telefon ausschließlich lokal zum Scannen von Barcodes/ISBNs und Fotografieren von Buchumschlägen verwendet. Weder Videos noch Fotos verlassen Ihr Gerät.",
       "privacy_point_4": "Kein Tracking oder Analytics: Diese Anwendung enthält keine Werbe-Tracker, Analyse-Tools oder Telemetrie von Drittanbietern.",
-      "settings_updated": "Einstellungen aktualisiert!"
+      "settings_updated": "Einstellungen aktualisiert!",
+      "circle": "Zirkel",
+      "sort_circle": "Zirkel",
+      "anthology": "Anthologie",
+      "sort_anthology": "Anthologie"
     }
   },
   "ko": {
@@ -762,7 +786,11 @@ const resources = {
       "privacy_point_2": "데이터 전송 제로: Dolib은 외부 서버나 클라우드 서비스에 사용자 데이터를 보내거나, 업로드하거나, 동기화하거나, 전송하지 않습니다.",
       "privacy_point_3": "카메라 사용: 카메라 액세스는 휴대폰에서 바코드/ISBN 스캔 및 책 표지 촬영을 위해 로컬에서만 엄격하게 사용됩니다. 비디오나 사진은 절대 기기를 벗어나지 않습니다.",
       "privacy_point_4": "추적 또는 분석 없음: 이 애플리케이션에는 광고 추적기, 분석 도구 또는 타사 원격 측정 데이터가 포함되어 있지 않습니다.",
-      "settings_updated": "설정이 업데이트되었습니다!"
+      "settings_updated": "설정이 업데이트되었습니다!",
+      "circle": "서클",
+      "sort_circle": "서클",
+      "anthology": "앤솔로지",
+      "sort_anthology": "앤솔로지"
     }
   },
   "pt": {
@@ -871,7 +899,11 @@ const resources = {
       "privacy_point_2": "Zero Transmissão de Dados: O Dolib não envia, faz upload, sincroniza ou transmite quaisquer dados do utilizador para servidores externos ou serviços cloud.",
       "privacy_point_3": "Utilização da Câmara: O acesso à câmara é estritamente usado localmente no seu telemóvel para digitalizar códigos de barras/ISBN e tirar fotos das capas dos livros. Nenhum vídeo ou foto sai do seu dispositivo.",
       "privacy_point_4": "Sem Rastreamento ou Analytics: Esta aplicação não contém rastreadores de anúncios, ferramentas de análise ou telemetria de terceiros.",
-      "settings_updated": "Configurações atualizadas!"
+      "settings_updated": "Configurações atualizadas!",
+      "circle": "Círculo",
+      "sort_circle": "Círculo",
+      "anthology": "Antologia",
+      "sort_anthology": "Antologia"
     }
   },
   "it": {
@@ -980,7 +1012,11 @@ const resources = {
       "privacy_point_2": "Nessuna trasmissione dati: Dolib non invia, carica, sincronizza o trasmette alcun dato dell'utente a server esterni o servizi cloud.",
       "privacy_point_3": "Utilizzo fotocamera: L'accesso alla fotocamera viene utilizzato esclusivamente a livello locale sul telefono per scansionare codici a barre/ISBN e fotografare le copertine dei libri. Nessun video o foto lascia mai il tuo dispositivo.",
       "privacy_point_4": "Nessun tracciamento o analisi: Questa applicazione non contiene tracciatori pubblicitari, strumenti di analisi o telemetria di terze parti.",
-      "settings_updated": "Impostazioni aggiornate!"
+      "settings_updated": "Impostazioni aggiornate!",
+      "circle": "Circolo",
+      "sort_circle": "Circolo",
+      "anthology": "Antologia",
+      "sort_anthology": "Antologia"
     }
   },
   "ru": {
@@ -1089,7 +1125,11 @@ const resources = {
       "privacy_point_2": "Нулевая передача данных: Dolib не отправляет, не загружает, не синхронизирует и не передает какие-либо пользовательские данные на внешние серверы или в облачные сервисы.",
       "privacy_point_3": "Использование камеры: доступ к камере используется строго локально на вашем телефоне для сканирования штрих-кодов/ISBN и фотографирования обложек книг. Видео и фотографии никогда не покидают ваше устройство.",
       "privacy_point_4": "Отсутствие отслеживания и аналитики: это приложение не содержит рекламных трекеров, аналитических инструментов или телеметрии сторонних разработчиков.",
-      "settings_updated": "Настройки обновлены!"
+      "settings_updated": "Настройки обновлены!",
+      "circle": "Кружок",
+      "sort_circle": "Кружок",
+      "anthology": "Антология",
+      "sort_anthology": "Антология"
     }
   }
 };

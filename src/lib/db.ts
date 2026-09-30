@@ -5,7 +5,7 @@ export interface Book {
   title: string;
   author: string;
   barcode?: string;
-  parody?: string; // As requested, likely category/genre
+  parody?: string; // As requested, likely category/genre\n  circle?: string;\n  isAnthology?: boolean;
   coverImage?: string; // Base64 string
   addedAt: number;
   notes?: string;
