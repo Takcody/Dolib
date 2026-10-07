@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Book } from '@/lib/db';
+import { triggerFilePickerIntent } from '@/lib/pickerState';
 import { BookCard } from './BookCard';
 import { BookForm } from './BookForm';
 import { CameraCapture } from './CameraCapture';
@@ -197,7 +198,7 @@ export function LibraryView() {
       if (code) {
         barcodeCounts.set(code, (barcodeCounts.get(code) || 0) + 1);
       }
-      const titleKey = `${b.title.trim().toLowerCase()}|${b.author.trim().toLowerCase()}`;
+      const titleKey = `${b.title.trim().toLowerCase()}|${(b.author || '').trim().toLowerCase()}`;
       titleCounts.set(titleKey, (titleCounts.get(titleKey) || 0) + 1);
     });
 
@@ -217,7 +218,7 @@ export function LibraryView() {
   const isBookDuplicate = (book: Book) => {
     const code = book.barcode?.trim();
     if (code && duplicateBarcodes.has(code)) return true;
-    const titleKey = `${book.title.trim().toLowerCase()}|${book.author.trim().toLowerCase()}`;
+    const titleKey = `${book.title.trim().toLowerCase()}|${(book.author || '').trim().toLowerCase()}`;
     if (duplicateTitles.has(titleKey)) return true;
     return false;
   };
@@ -226,7 +227,8 @@ export function LibraryView() {
     const query = searchQuery.toLowerCase();
     let result = books.filter(book => 
       book.title.toLowerCase().includes(query) ||
-      book.author.toLowerCase().includes(query) ||
+      (book.translatedTitle || '').toLowerCase().includes(query) ||
+      (book.author || '').toLowerCase().includes(query) ||
       book.barcode?.toLowerCase().includes(query) ||
       book.parody?.toLowerCase().includes(query) ||
       book.circle?.toLowerCase().includes(query)
@@ -240,15 +242,15 @@ export function LibraryView() {
         const codeA = a.barcode?.trim() || '';
         const codeB = b.barcode?.trim() || '';
         if (codeA && codeB && codeA !== codeB) return codeA.localeCompare(codeB);
-        const nameA = `${a.title.toLowerCase()}|${a.author.toLowerCase()}`;
-        const nameB = `${b.title.toLowerCase()}|${b.author.toLowerCase()}`;
+        const nameA = `${a.title.toLowerCase()}|${(a.author || '').toLowerCase()}`;
+        const nameB = `${b.title.toLowerCase()}|${(b.author || '').toLowerCase()}`;
         if (nameA !== nameB) return nameA.localeCompare(nameB);
         return b.addedAt - a.addedAt;
       });
     } else if (sortBy === 'alpha') {
       result.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === 'author') {
-      result.sort((a, b) => a.author.localeCompare(b.author));
+      result.sort((a, b) => (a.author || '').localeCompare(b.author || ''));
     } else if (sortBy === 'circle') {
       result.sort((a, b) => (a.circle || '').localeCompare(b.circle || ''));
     } else if (sortBy === 'parody') {
@@ -731,6 +733,7 @@ export function LibraryView() {
                     type="file"
                     accept="image/*,.gif"
                     className="hidden"
+                    onClick={triggerFilePickerIntent}
                     onChange={handleBackgroundFileInput}
                   />
                   <input
@@ -739,6 +742,7 @@ export function LibraryView() {
                     accept="image/*"
                     capture="environment"
                     className="hidden"
+                    onClick={triggerFilePickerIntent}
                     onChange={handleBackgroundFileInput}
                   />
 
@@ -969,7 +973,7 @@ export function LibraryView() {
 
               <div className="flex flex-col items-center gap-3">
                 <div className="p-3 bg-white rounded-xl shadow-xs border">
-                  <QRCodeSVG value={JSON.stringify(books.map(b => ({ t: b.title, a: b.author }))).slice(0, 2000)} size={180} />
+                  <QRCodeSVG value={JSON.stringify(books.map(b => ({ t: b.title, a: b.author || '' }))).slice(0, 2000)} size={180} />
                 </div>
                 <p className="text-[10px] text-center text-muted-foreground max-w-[220px]">
                   {t('qr_share_desc')}
@@ -1018,7 +1022,7 @@ export function LibraryView() {
                     <p className="text-xs text-muted-foreground font-semibold">{t('click_to_upload')}</p>
                     <p className="text-[10px] text-muted-foreground">{t('json_only')}</p>
                   </div>
-                  <input type="file" className="hidden" accept=".json" onChange={handleImport} />
+                  <input type="file" className="hidden" accept=".json" onClick={triggerFilePickerIntent} onChange={handleImport} />
                 </label>
               </div>
             </div>

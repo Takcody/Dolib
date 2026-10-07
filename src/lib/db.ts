@@ -3,9 +3,12 @@ import Dexie, { type Table } from 'dexie';
 export interface Book {
   id?: number;
   title: string;
-  author: string;
+  translatedTitle?: string;
+  author?: string;
   barcode?: string;
-  parody?: string; // As requested, likely category/genre\n  circle?: string;\n  isAnthology?: boolean;
+  parody?: string; // As requested, likely category/genre
+  circle?: string;
+  isAnthology?: boolean;
   coverImage?: string; // Base64 string
   addedAt: number;
   notes?: string;
@@ -31,7 +34,7 @@ export class LibrisDatabase extends Dexie {
   constructor() {
     super('LibrisDB');
     this.version(1).stores({
-      books: '++id, title, author, barcode, parody, addedAt',
+      books: '++id, title, translatedTitle, author, barcode, parody, addedAt',
       settings: 'id'
     });
   }

@@ -1,21 +1,24 @@
 import React, { useState, useRef } from 'react';
 import { Book, db } from '@/lib/db';
+import { triggerFilePickerIntent } from '@/lib/pickerState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Camera, BookOpen, Save, Trash2, Scan, Copy, FolderOpen } from 'lucide-react';
+import { AutoCompleteInput } from '@/components/ui/AutoCompleteInput';
+import { Camera, Save, Trash2, Scan, Copy, FolderOpen } from 'lucide-react';
 import { CameraCapture } from './CameraCapture';
 import { AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useLiveQuery } from 'dexie-react-hooks';
 
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 
 interface BookFormProps {
@@ -26,6 +29,7 @@ interface BookFormProps {
 export function BookForm({ book, onClose }: BookFormProps) {
   const { t } = useTranslation();
   const [title, setTitle] = useState(book?.title || '');
+  const [translatedTitle, setTranslatedTitle] = useState(book?.translatedTitle || '');
   const [author, setAuthor] = useState(book?.author || '');
   const [barcode, setBarcode] = useState(book?.barcode || '');
   const [circle, setCircle] = useState(book?.circle || '');
@@ -38,6 +42,30 @@ export function BookForm({ book, onClose }: BookFormProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Background suggestions queried live from database
+  const dbSuggestions = useLiveQuery(
+    async () => {
+      const books = await db.books.toArray();
+      const authorSet = new Set<string>();
+      const circleSet = new Set<string>();
+      const parodySet = new Set<string>();
+
+      books.forEach((b) => {
+        if (b.author?.trim()) authorSet.add(b.author.trim());
+        if (b.circle?.trim()) circleSet.add(b.circle.trim());
+        if (b.parody?.trim()) parodySet.add(b.parody.trim());
+      });
+
+      return {
+        authors: Array.from(authorSet).sort(),
+        circles: Array.from(circleSet).sort(),
+        parodies: Array.from(parodySet).sort(),
+      };
+    },
+    [],
+    { authors: [], circles: [], parodies: [] }
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -90,19 +118,21 @@ export function BookForm({ book, onClose }: BookFormProps) {
 
   const handleSubmit = async (e: React.FormEvent, force = false) => {
     e.preventDefault();
-    if (!title || !author) {
-      toast.error(t('title') + ' & ' + t('author') + ' are required');
+    if (!title.trim()) {
+      toast.error(t('title') + ' ' + t('is_required', { defaultValue: 'is required' }));
       return;
     }
 
+    const trimmedAuthor = author.trim();
+
     // Check for duplicates if not editing an existing book or if title/author changed
-    if (!book?.id || (book.title !== title || book.author !== author)) {
+    if (!book?.id || book.title !== title || (book.author || '') !== trimmedAuthor) {
       if (!force) {
         const existing = await db.books
           .where({ title })
-          .and(b => b.author === author)
+          .and((b) => (b.author || '').trim() === trimmedAuthor)
           .first();
-        
+
         if (existing) {
           setShowDuplicateWarning(true);
           return;
@@ -112,7 +142,8 @@ export function BookForm({ book, onClose }: BookFormProps) {
 
     const bookData: Book = {
       title,
-      author,
+      translatedTitle: translatedTitle.trim() || undefined,
+      author: trimmedAuthor,
       barcode,
       circle,
       parody,
@@ -178,7 +209,7 @@ export function BookForm({ book, onClose }: BookFormProps) {
               </button>
             </>
           ) : (
-            <div 
+            <div
               className="flex flex-col items-center justify-center gap-2 p-2 text-center cursor-pointer select-none w-full h-full hover:bg-muted/60 transition-colors"
               onClick={() => {
                 setCameraMode('photo');
@@ -213,11 +244,13 @@ export function BookForm({ book, onClose }: BookFormProps) {
           type="file"
           accept="image/*"
           className="hidden"
+          onClick={triggerFilePickerIntent}
           onChange={handleFileChange}
         />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Book Title (Required, Title Caps via autoCapitalize="words") */}
         <div className="space-y-1.5">
           <Label htmlFor="title" className="text-xs">{t('title')}</Label>
           <Input
@@ -226,31 +259,56 @@ export function BookForm({ book, onClose }: BookFormProps) {
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t('title')}
             className="h-9 text-sm"
+            autoCapitalize="words"
+            autoCorrect="off"
             required
           />
         </div>
 
+        {/* Translated Title (Optional, Title Caps via autoCapitalize="words") */}
+        <div className="space-y-1.5">
+          <Label htmlFor="translatedTitle" className="text-xs">
+            {t('translated_title', 'Translated Title')}
+          </Label>
+          <Input
+            id="translatedTitle"
+            value={translatedTitle}
+            onChange={(e) => setTranslatedTitle(e.target.value)}
+            placeholder={t('optional', { defaultValue: 'Optional' })}
+            className="h-9 text-sm"
+            autoCapitalize="words"
+            autoCorrect="off"
+          />
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
+          {/* Author (Optional, normal casing with background autocomplete) */}
           <div className="space-y-1.5">
-            <Label htmlFor="author" className="text-xs">{t('author')}</Label>
-            <Input
+            <Label htmlFor="author" className="text-xs">
+              {t('author')}
+            </Label>
+            <AutoCompleteInput
               id="author"
               value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder={t('author')}
+              onChange={(val) => setAuthor(val)}
+              options={dbSuggestions.authors}
+              placeholder={t('optional', { defaultValue: 'Optional' })}
               className="h-9 text-sm"
-              required
+              autoCapitalize="none"
             />
           </div>
 
+          {/* Circle (Optional, normal casing with background autocomplete) */}
           <div className="space-y-1.5">
             <Label htmlFor="circle" className="text-xs">{t('circle', 'Circle')}</Label>
-            <Input
+            <AutoCompleteInput
               id="circle"
               value={circle}
-              onChange={(e) => setCircle(e.target.value)}
-              placeholder={t('circle', 'Circle')}
+              onChange={(val) => setCircle(val)}
+              options={dbSuggestions.circles}
+              placeholder={t('optional', { defaultValue: 'Optional' })}
               className="h-9 text-sm"
+              autoCapitalize="none"
             />
           </div>
         </div>
@@ -280,14 +338,18 @@ export function BookForm({ book, onClose }: BookFormProps) {
               </Button>
             </div>
           </div>
+
+          {/* Parody / Category (Optional, Title Caps with background autocomplete) */}
           <div className="space-y-1.5">
             <Label htmlFor="parody" className="text-xs">{t('parody')}</Label>
-            <Input
+            <AutoCompleteInput
               id="parody"
               value={parody}
-              onChange={(e) => setParody(e.target.value)}
-              placeholder={t('parody_placeholder')}
+              onChange={(val) => setParody(val)}
+              options={dbSuggestions.parodies}
+              placeholder={t('optional', { defaultValue: 'Optional' })}
               className="h-9 text-sm"
+              autoCapitalize="words"
             />
           </div>
         </div>
@@ -354,19 +416,19 @@ export function BookForm({ book, onClose }: BookFormProps) {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm" 
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
                 className="flex-1 h-8 text-xs"
                 onClick={() => setShowDuplicateWarning(false)}
               >
                 {t('cancel')}
               </Button>
-              <Button 
-                type="button" 
-                variant="destructive" 
-                size="sm" 
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
                 className="flex-1 h-8 text-xs"
                 onClick={(e) => handleSubmit(e as any, true)}
               >

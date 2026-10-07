@@ -51,10 +51,19 @@ export const BookCard: React.FC<BookCardProps> = ({ book, isDuplicate, onClick }
         )}
       </div>
       <CardContent className="p-3 space-y-1">
-        <h3 className="font-bold text-sm line-clamp-1 leading-tight">{book.title}</h3>
+        <div>
+          <h3 className="font-bold text-sm line-clamp-1 leading-tight">{book.title}</h3>
+          {book.translatedTitle && (
+            <p className="text-[11px] text-muted-foreground line-clamp-1 italic font-normal">
+              {book.translatedTitle}
+            </p>
+          )}
+        </div>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <User className="w-3 h-3" />
-          <span className="line-clamp-1">{book.author}</span>
+          <User className="w-3 h-3 shrink-0" />
+          <span className="line-clamp-1">
+            {book.author?.trim() || (book.isAnthology ? t('anthology', 'Anthology') : '—')}
+          </span>
         </div>
         {book.barcode && (
           <div className="flex items-center gap-1 text-[10px] text-muted-foreground/70 font-mono">

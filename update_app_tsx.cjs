@@ -1,4 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+const fs = require('fs');
+
+const path = 'src/App.tsx';
+
+const newCode = `import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LockScreen } from './components/LockScreen';
 import { LibraryView } from './components/LibraryView';
 import { OrientationGuard } from './components/OrientationGuard';
@@ -7,7 +11,6 @@ import { initSettings, db } from './lib/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useTranslation } from 'react-i18next';
 import { App as CapApp } from '@capacitor/app';
-import { isFilePickerActive, clearFilePickerIntent } from './lib/pickerState';
 
 export default function App() {
   const [isLocked, setIsLocked] = useState(true);
@@ -49,8 +52,6 @@ export default function App() {
 
   useEffect(() => {
     const handleVis = () => {
-      // Don't log background time if biometric modal or file picker is active
-      if (localStorage.getItem('biometricActive') === 'true' || isFilePickerActive()) return;
       if (document.hidden) {
         localStorage.setItem('lastBackgroundTime', Date.now().toString());
       }
@@ -61,14 +62,9 @@ export default function App() {
 
   useEffect(() => {
     const handleAppStateChange = async ({ isActive }: { isActive: boolean }) => {
-      if (isActive) {
-        if (localStorage.getItem('biometricActive') === 'true' || isFilePickerActive()) {
-          localStorage.removeItem('biometricActive');
-          localStorage.removeItem('lastBackgroundTime');
-          clearFilePickerIntent();
-          return;
-        }
-
+      if (!isActive) {
+        localStorage.setItem('lastBackgroundTime', Date.now().toString());
+      } else {
         const bgTimeStr = localStorage.getItem('lastBackgroundTime');
         if (bgTimeStr) {
           const bgTime = parseInt(bgTimeStr, 10);
@@ -85,11 +81,6 @@ export default function App() {
               }
             }
           }
-          localStorage.removeItem('lastBackgroundTime');
-        }
-      } else {
-        if (localStorage.getItem('biometricActive') !== 'true' && !isFilePickerActive()) {
-          localStorage.setItem('lastBackgroundTime', Date.now().toString());
         }
       }
     };
@@ -168,3 +159,7 @@ export default function App() {
     </main>
   );
 }
+`;
+
+fs.writeFileSync(path, newCode);
+console.log('App.tsx fully rewritten with accurate auto-lock logic.');
