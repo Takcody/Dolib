@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useId } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -26,7 +26,6 @@ export function AutoCompleteInput({
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const datalistId = useId();
 
   // Filter options based on input value
   const filteredOptions = React.useMemo(() => {
@@ -99,17 +98,10 @@ export function AutoCompleteInput({
         placeholder={placeholder}
         className={cn('h-9 text-sm', className)}
         autoCapitalize={autoCapitalize}
-        list={datalistId}
+        autoComplete="off"
         required={required}
         {...props}
       />
-
-      {/* Native Browser DataList Fallback */}
-      <datalist id={datalistId}>
-        {options.map((opt, i) => (
-          <option key={`${opt}-${i}`} value={opt} />
-        ))}
-      </datalist>
 
       {/* Custom Styled Suggestion Popup */}
       <AnimatePresence>
@@ -119,14 +111,17 @@ export function AutoCompleteInput({
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={{ opacity: 0, y: -4, scaleY: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 top-full mt-1 z-50 max-h-44 overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md"
+            className="absolute left-0 right-0 top-full mt-1 z-50 max-h-40 overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md"
           >
             <div className="p-1 space-y-0.5">
               {filteredOptions.map((opt, index) => (
                 <button
                   key={`${opt}-${index}`}
                   type="button"
-                  onClick={() => handleSelect(opt)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelect(opt);
+                  }}
                   onMouseEnter={() => setHighlightedIndex(index)}
                   className={cn(
                     'w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors flex items-center justify-between cursor-pointer select-none',
