@@ -6,10 +6,10 @@ export interface Book {
   translatedTitle?: string;
   author?: string;
   barcode?: string;
-  parody?: string; // As requested, likely category/genre
+  parody?: string;
   circle?: string;
   isAnthology?: boolean;
-  coverImage?: string; // Base64 string
+  coverImage?: string;
   addedAt: number;
   notes?: string;
   size?: string;
@@ -45,10 +45,12 @@ export const db = new LibrisDatabase();
 // Initialize settings if not exists
 export async function initSettings() {
   const settings = await db.settings.get('main');
+  const systemDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (!settings) {
     await db.settings.add({
       id: 'main',
-      isLocked: false
+      isLocked: false,
+      isDarkMode: systemDark
     });
   }
 }

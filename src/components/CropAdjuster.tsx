@@ -1,45 +1,74 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, RefreshCw, Sparkles, Maximize2, Crop } from 'lucide-react';
+import { Check, RefreshCw, Maximize2, Crop, Square, BookOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import {
-  QuadCorners,
-  Point,
-  detectBookCorners,
-  getDefaultCorners,
-  warpPerspectiveImage,
-} from '@/lib/documentScanner';
-import { motion } from 'motion/react';
+import { cropImageToBox } from '@/lib/documentScanner';
+
+interface CropBox {
+  xPct: number; // 0 to 1
+  yPct: number; // 0 to 1
+  wPct: number; // 0 to 1
+  hPct: number; // 0 to 1
+}
 
 interface CropAdjusterProps {
   imageSrc: string;
-  initialCorners?: QuadCorners | null;
   onConfirm: (croppedImageData: string) => void;
   onRetake: () => void;
 }
 
+// Japanese Industrial Standard JIS B5 aspect ratio (182mm x 257mm)
+const JIS_B5_ASPECT = 182 / 257; // ~0.70817
+
+const getAspectCropBox = (targetAspect: number, imgW: number, imgH: number): CropBox => {
+  if (!imgW || !imgH) return { xPct: 0.1, yPct: 0.1, wPct: 0.8, hPct: 0.8 };
+
+  const imgAspect = imgW / imgH;
+  let wPct = 0.80;
+  let hPct = (imgAspect * wPct) / targetAspect;
+
+  if (hPct > 0.90) {
+    hPct = 0.90;
+    wPct = (targetAspect * hPct) / imgAspect;
+  }
+
+  const xPct = Math.max(0, (1 - wPct) / 2);
+  const yPct = Math.max(0, (1 - hPct) / 2);
+
+  return { xPct, yPct, wPct, hPct };
+};
+
 export function CropAdjuster({
   imageSrc,
-  initialCorners,
   onConfirm,
   onRetake,
 }: CropAdjusterProps) {
   const { t } = useTranslation();
-  const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   const [imageSize, setImageSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
-  const [corners, setCorners] = useState<QuadCorners>({
-    tl: { x: 0, y: 0 },
-    tr: { x: 100, y: 0 },
-    br: { x: 100, y: 100 },
-    bl: { x: 0, y: 100 },
+  const [renderedSize, setRenderedSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  const [cropBox, setCropBox] = useState<CropBox>({
+    xPct: 0.10,
+    yPct: 0.10,
+    wPct: 0.80,
+    hPct: 0.80,
   });
-  const [activeCorner, setActiveCorner] = useState<keyof QuadCorners | null>(null);
-  const [dragPos, setDragPos] = useState<Point | null>(null);
+
+  const [activeHandle, setActiveHandle] = useState<string | null>(null);
+  const [startPoint, setStartPoint] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [startBox, setStartBox] = useState<CropBox>(cropBox);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Initialize image and corners
+  const updateRenderedSize = useCallback(() => {
+    if (imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setRenderedSize({ w: rect.width, h: rect.height });
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -47,85 +76,68 @@ export function CropAdjuster({
       const w = img.naturalWidth || img.width;
       const h = img.naturalHeight || img.height;
       setImageSize({ w, h });
-
-      if (initialCorners) {
-        setCorners(initialCorners);
-      } else {
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0);
-          const detected = detectBookCorners(ctx, w, h);
-          if (detected) {
-            setCorners(detected.corners);
-          } else {
-            setCorners(getDefaultCorners(w, h, 0.08));
-          }
-        } else {
-          setCorners(getDefaultCorners(w, h, 0.08));
-        }
-      }
+      setCropBox(getAspectCropBox(JIS_B5_ASPECT, w, h));
     };
     img.src = imageSrc;
-  }, [imageSrc, initialCorners]);
+  }, [imageSrc]);
 
-  // Convert image coordinates (0..w, 0..h) to container relative percentages
-  const toDisplayPoint = useCallback(
-    (p: Point): Point => {
-      if (!imageSize.w || !imageSize.h) return { x: 0, y: 0 };
-      return {
-        x: (p.x / imageSize.w) * 100,
-        y: (p.y / imageSize.h) * 100,
-      };
-    },
-    [imageSize]
-  );
+  useEffect(() => {
+    window.addEventListener('resize', updateRenderedSize);
+    return () => window.removeEventListener('resize', updateRenderedSize);
+  }, [updateRenderedSize]);
 
-  // Convert container touch/mouse point to image coordinates (0..w, 0..h)
-  const toImagePoint = useCallback(
-    (clientPoint: Point): Point => {
-      if (!containerRef.current || !imageSize.w || !imageSize.h) return { x: 0, y: 0 };
-      const rect = containerRef.current.getBoundingClientRect();
-      const xPct = Math.max(0, Math.min(1, (clientPoint.x - rect.left) / rect.width));
-      const yPct = Math.max(0, Math.min(1, (clientPoint.y - rect.top) / rect.height));
-      return {
-        x: Math.round(xPct * imageSize.w),
-        y: Math.round(yPct * imageSize.h),
-      };
-    },
-    [imageSize]
-  );
-
-  const handlePointerDown = (cornerKey: keyof QuadCorners, e: React.PointerEvent) => {
+  const handlePointerDown = (handle: string, e: React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setActiveCorner(cornerKey);
-    const p = toImagePoint({ x: e.clientX, y: e.clientY });
-    setDragPos(p);
+    setActiveHandle(handle);
+    setStartPoint({ x: e.clientX, y: e.clientY });
+    setStartBox({ ...cropBox });
   };
 
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
-      if (!activeCorner) return;
-      const p = toImagePoint({ x: e.clientX, y: e.clientY });
-      setDragPos(p);
-      setCorners((prev) => ({
-        ...prev,
-        [activeCorner]: p,
-      }));
+      if (!activeHandle || !imageRef.current) return;
+      const rect = imageRef.current.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      const dxPct = (e.clientX - startPoint.x) / rect.width;
+      const dyPct = (e.clientY - startPoint.y) / rect.height;
+
+      let newBox = { ...startBox };
+
+      if (activeHandle === 'move') {
+        newBox.xPct = Math.max(0, Math.min(1 - startBox.wPct, startBox.xPct + dxPct));
+        newBox.yPct = Math.max(0, Math.min(1 - startBox.hPct, startBox.yPct + dyPct));
+      } else {
+        if (activeHandle.includes('l')) {
+          const newX = Math.max(0, Math.min(startBox.xPct + startBox.wPct - 0.1, startBox.xPct + dxPct));
+          newBox.wPct = startBox.wPct + (startBox.xPct - newX);
+          newBox.xPct = newX;
+        }
+        if (activeHandle.includes('r')) {
+          newBox.wPct = Math.max(0.1, Math.min(1 - startBox.xPct, startBox.wPct + dxPct));
+        }
+        if (activeHandle.includes('t')) {
+          const newY = Math.max(0, Math.min(startBox.yPct + startBox.hPct - 0.1, startBox.yPct + dyPct));
+          newBox.hPct = startBox.hPct + (startBox.yPct - newY);
+          newBox.yPct = newY;
+        }
+        if (activeHandle.includes('b')) {
+          newBox.hPct = Math.max(0.1, Math.min(1 - startBox.yPct, startBox.hPct + dyPct));
+        }
+      }
+
+      setCropBox(newBox);
     },
-    [activeCorner, toImagePoint]
+    [activeHandle, startPoint, startBox]
   );
 
   const handlePointerUp = useCallback(() => {
-    setActiveCorner(null);
-    setDragPos(null);
+    setActiveHandle(null);
   }, []);
 
   useEffect(() => {
-    if (activeCorner) {
+    if (activeHandle) {
       window.addEventListener('pointermove', handlePointerMove);
       window.addEventListener('pointerup', handlePointerUp);
       return () => {
@@ -133,52 +145,32 @@ export function CropAdjuster({
         window.removeEventListener('pointerup', handlePointerUp);
       };
     }
-  }, [activeCorner, handlePointerMove, handlePointerUp]);
-
-  const handleAutoDetect = () => {
-    if (!imageSize.w || !imageSize.h) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = imageSize.w;
-    canvas.height = imageSize.h;
-    const ctx = canvas.getContext('2d');
-    if (ctx && imageRef.current) {
-      ctx.drawImage(imageRef.current, 0, 0);
-      const detected = detectBookCorners(ctx, imageSize.w, imageSize.h);
-      if (detected) {
-        setCorners(detected.corners);
-      } else {
-        setCorners(getDefaultCorners(imageSize.w, imageSize.h, 0.08));
-      }
-    }
-  };
+  }, [activeHandle, handlePointerMove, handlePointerUp]);
 
   const handleResetFull = () => {
-    if (!imageSize.w || !imageSize.h) return;
-    setCorners({
-      tl: { x: 0, y: 0 },
-      tr: { x: imageSize.w, y: 0 },
-      br: { x: imageSize.w, y: imageSize.h },
-      bl: { x: 0, y: imageSize.h },
-    });
+    setCropBox({ xPct: 0, yPct: 0, wPct: 1, hPct: 1 });
+  };
+
+  const handlePresetB5 = () => {
+    setCropBox(getAspectCropBox(JIS_B5_ASPECT, imageSize.w, imageSize.h));
+  };
+
+  const handlePresetSquare = () => {
+    setCropBox(getAspectCropBox(1.0, imageSize.w, imageSize.h));
   };
 
   const handleConfirmCrop = async () => {
     setIsProcessing(true);
     try {
-      const cropped = await warpPerspectiveImage(imageSrc, corners);
+      const cropped = await cropImageToBox(imageSrc, cropBox);
       onConfirm(cropped);
     } catch (e) {
-      console.error('Warp perspective failed:', e);
+      console.error('Crop failed:', e);
       onConfirm(imageSrc);
     } finally {
       setIsProcessing(false);
     }
   };
-
-  const displayTL = toDisplayPoint(corners.tl);
-  const displayTR = toDisplayPoint(corners.tr);
-  const displayBR = toDisplayPoint(corners.br);
-  const displayBL = toDisplayPoint(corners.bl);
 
   return (
     <div className="fixed inset-0 bg-black z-[70] flex flex-col justify-between select-none">
@@ -187,7 +179,7 @@ export function CropAdjuster({
         <div className="flex items-center gap-2">
           <Crop className="w-5 h-5 text-primary" />
           <span className="font-semibold text-sm">
-            {t('adjust_corners', { defaultValue: 'Adjust Corners & Crop' })}
+            {t('adjust_crop', { defaultValue: 'Crop Book Cover' })}
           </span>
         </div>
 
@@ -195,11 +187,21 @@ export function CropAdjuster({
           <Button
             variant="outline"
             size="sm"
-            onClick={handleAutoDetect}
+            onClick={handlePresetB5}
             className="h-8 text-xs gap-1 text-white border-white/20 bg-white/10 hover:bg-white/20"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Auto</span>
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>JIS B5</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePresetSquare}
+            className="h-8 text-xs gap-1 text-white border-white/20 bg-white/10 hover:bg-white/20"
+          >
+            <Square className="w-3.5 h-3.5" />
+            <span>1:1</span>
           </Button>
 
           <Button
@@ -214,89 +216,98 @@ export function CropAdjuster({
         </div>
       </div>
 
-      {/* Main Image View & Interactive Polygon */}
+      {/* Interactive Rectangular Crop View */}
       <div className="relative flex-1 flex items-center justify-center p-4 overflow-hidden">
-        <div
-          ref={containerRef}
-          className="relative inline-block max-w-full max-h-[68vh] shadow-2xl rounded-sm overflow-hidden"
-        >
+        <div className="relative max-w-full max-h-[68vh] shadow-2xl rounded-sm overflow-hidden select-none flex items-center justify-center">
           <img
             ref={imageRef}
             src={imageSrc}
             alt="Original"
+            onLoad={updateRenderedSize}
             className="block max-w-full max-h-[68vh] w-auto h-auto object-contain pointer-events-none rounded-sm"
           />
 
-          {/* SVG Overlay connecting 4 corners */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-            <defs>
-              <mask id="crop-mask">
-                <rect width="100%" height="100%" fill="white" />
-                <polygon
-                  points={`${displayTL.x}%,${displayTL.y}% ${displayTR.x}%,${displayTR.y}% ${displayBR.x}%,${displayBR.y}% ${displayBL.x}%,${displayBL.y}%`}
-                  fill="black"
-                />
-              </mask>
-            </defs>
-
-            <rect width="100%" height="100%" fill="rgba(0, 0, 0, 0.55)" mask="url(#crop-mask)" />
-
-            {/* Polygon Outline */}
-            <polygon
-              points={`${displayTL.x}%,${displayTL.y}% ${displayTR.x}%,${displayTR.y}% ${displayBR.x}%,${displayBR.y}% ${displayBL.x}%,${displayBL.y}%`}
-              fill="rgba(59, 130, 246, 0.15)"
-              stroke="#3b82f6"
-              strokeWidth="2.5"
-              strokeDasharray="4 2"
-            />
-          </svg>
-
-          {/* Draggable Corner Handles */}
-          {(['tl', 'tr', 'br', 'bl'] as const).map((key) => {
-            const pt = toDisplayPoint(corners[key]);
-            const isDragging = activeCorner === key;
-            return (
-              <div
-                key={key}
-                onPointerDown={(e) => handlePointerDown(key, e)}
-                style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 w-9 h-9 z-20 cursor-grab active:cursor-grabbing flex items-center justify-center touch-none"
-              >
-                <div
-                  className={`w-6 h-6 rounded-full border-2 border-white shadow-lg transition-transform ${
-                    isDragging ? 'bg-amber-400 scale-125' : 'bg-primary scale-100 hover:scale-110'
-                  }`}
-                />
-              </div>
-            );
-          })}
-
-          {/* Loupe / Magnifying Glass when dragging */}
-          {activeCorner && dragPos && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              style={{
-                left: `${toDisplayPoint(dragPos).x}%`,
-                top: `${toDisplayPoint(dragPos).y - 18}%`,
-              }}
-              className="absolute -translate-x-1/2 -translate-y-full w-24 h-24 rounded-full border-2 border-amber-400 shadow-2xl overflow-hidden bg-black z-30 pointer-events-none"
+          {/* SVG Dimming Overlay Strictly Bounded to Rendered Image Dimensions */}
+          {renderedSize.w > 0 && renderedSize.h > 0 && (
+            <div
+              style={{ width: `${renderedSize.w}px`, height: `${renderedSize.h}px` }}
+              className="absolute inset-0 m-auto pointer-events-none z-10"
             >
-              <img
-                src={imageSrc}
-                alt="Zoom"
+              <svg className="w-full h-full pointer-events-none">
+                <defs>
+                  <mask id="crop-box-mask">
+                    <rect width="100%" height="100%" fill="white" />
+                    <rect
+                      x={`${cropBox.xPct * 100}%`}
+                      y={`${cropBox.yPct * 100}%`}
+                      width={`${cropBox.wPct * 100}%`}
+                      height={`${cropBox.hPct * 100}%`}
+                      fill="black"
+                    />
+                  </mask>
+                </defs>
+
+                <rect width="100%" height="100%" fill="rgba(0, 0, 0, 0.65)" mask="url(#crop-box-mask)" />
+              </svg>
+
+              {/* Interactive Crop Rectangle */}
+              <div
+                onPointerDown={(e) => handlePointerDown('move', e)}
                 style={{
-                  width: `${imageSize.w}px`,
-                  height: `${imageSize.h}px`,
-                  transform: `translate(-${dragPos.x}px, -${dragPos.y}px) scale(2.5)`,
-                  transformOrigin: `${dragPos.x}px ${dragPos.y}px`,
+                  left: `${cropBox.xPct * 100}%`,
+                  top: `${cropBox.yPct * 100}%`,
+                  width: `${cropBox.wPct * 100}%`,
+                  height: `${cropBox.hPct * 100}%`,
                 }}
-                className="max-w-none"
-              />
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-3 h-3 border-t-2 border-l-2 border-amber-400" />
+                className="absolute z-20 border-2 border-amber-400 bg-amber-400/10 cursor-move pointer-events-auto touch-none flex flex-col justify-between"
+              >
+                {/* Grid Lines */}
+                <div className="w-full h-full border-t border-b border-white/30 border-dashed pointer-events-none grid grid-cols-3 grid-rows-3">
+                  <div className="border-r border-b border-white/20" />
+                  <div className="border-r border-b border-white/20" />
+                  <div className="border-b border-white/20" />
+                  <div className="border-r border-b border-white/20" />
+                  <div className="border-r border-b border-white/20" />
+                  <div className="border-b border-white/20" />
+                </div>
+
+                {/* Corner Drag Handles */}
+                <div
+                  onPointerDown={(e) => handlePointerDown('tl', e)}
+                  className="absolute -top-3 -left-3 w-7 h-7 bg-amber-400 border-2 border-white rounded-full shadow-lg cursor-nwse-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('tr', e)}
+                  className="absolute -top-3 -right-3 w-7 h-7 bg-amber-400 border-2 border-white rounded-full shadow-lg cursor-nesw-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('bl', e)}
+                  className="absolute -bottom-3 -left-3 w-7 h-7 bg-amber-400 border-2 border-white rounded-full shadow-lg cursor-nesw-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('br', e)}
+                  className="absolute -bottom-3 -right-3 w-7 h-7 bg-amber-400 border-2 border-white rounded-full shadow-lg cursor-nwse-resize z-30"
+                />
+
+                {/* Side Drag Handles */}
+                <div
+                  onPointerDown={(e) => handlePointerDown('t', e)}
+                  className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 bg-amber-400 border border-white rounded-full cursor-ns-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('b', e)}
+                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-10 h-4 bg-amber-400 border border-white rounded-full cursor-ns-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('l', e)}
+                  className="absolute top-1/2 -translate-y-1/2 -left-2 w-4 h-10 bg-amber-400 border border-white rounded-full cursor-ew-resize z-30"
+                />
+                <div
+                  onPointerDown={(e) => handlePointerDown('r', e)}
+                  className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-10 bg-amber-400 border border-white rounded-full cursor-ew-resize z-30"
+                />
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>

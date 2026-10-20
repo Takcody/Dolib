@@ -27,7 +27,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, isDuplicate, onClick }
           <img 
             src={book.coverImage} 
             alt={book.title} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <BookOpen className="w-12 h-12 text-muted-foreground/30" />

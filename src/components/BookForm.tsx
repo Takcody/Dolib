@@ -35,7 +35,7 @@ export function BookForm({ book, onClose }: BookFormProps) {
   const [circle, setCircle] = useState(book?.circle || '');
   const [parody, setParody] = useState(book?.parody || '');
   const [isAnthology, setIsAnthology] = useState(book?.isAnthology || false);
-  const [size, setSize] = useState(book?.size || 'A4');
+  const [size, setSize] = useState(book?.size || 'B5');
   const [coverImage, setCoverImage] = useState(book?.coverImage || '');
   const [showCamera, setShowCamera] = useState(false);
   const [cameraMode, setCameraMode] = useState<'photo' | 'scan'>('photo');
@@ -184,31 +184,31 @@ export function BookForm({ book, onClose }: BookFormProps) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col items-center gap-2.5">
-        <div className="relative w-32 h-44 bg-muted rounded-xl overflow-hidden border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center group shadow-xs hover:border-primary/50 transition-colors">
-          {coverImage ? (
-            <>
-              <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
-              <button
-                type="button"
-                onClick={() => setCoverImage('')}
-                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-destructive text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer z-10"
-                title={t('delete')}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setCameraMode('photo');
-                  setShowCamera(true);
-                }}
-                className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-primary text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer z-10"
-                title={t('take_photo')}
-              >
-                <Camera className="w-3.5 h-3.5" />
-              </button>
-            </>
-          ) : (
+        {coverImage ? (
+          <div className="relative inline-block max-w-[14rem] max-h-[14rem] bg-muted rounded-xl overflow-hidden shadow-xs border border-border group">
+            <img src={coverImage} alt="Cover" className="block max-w-[14rem] max-h-[14rem] w-auto h-auto object-contain rounded-xl" />
+            <button
+              type="button"
+              onClick={() => setCoverImage('')}
+              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-destructive text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer z-10"
+              title={t('delete')}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setCameraMode('photo');
+                setShowCamera(true);
+              }}
+              className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-primary text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer z-10"
+              title={t('take_photo')}
+            >
+              <Camera className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <div className="relative w-32 h-44 bg-muted rounded-xl overflow-hidden border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center group shadow-xs hover:border-primary/50 transition-colors">
             <div
               className="flex flex-col items-center justify-center gap-2 p-2 text-center cursor-pointer select-none w-full h-full hover:bg-muted/60 transition-colors"
               onClick={() => {
@@ -223,8 +223,8 @@ export function BookForm({ book, onClose }: BookFormProps) {
                 {t('take_photo')}
               </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Gallery Action Button */}
         <Button
@@ -362,10 +362,12 @@ export function BookForm({ book, onClose }: BookFormProps) {
                 <SelectValue placeholder={t('size')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="A4">A4 (Standard)</SelectItem>
-                <SelectItem value="A5">A5 (Pocket)</SelectItem>
-                <SelectItem value="B5">B5 (Composition)</SelectItem>
-                <SelectItem value="Letter">Letter</SelectItem>
+                <SelectItem value="B5">B5 - 182x257mm</SelectItem>
+                <SelectItem value="A5">A5 - 148x210mm</SelectItem>
+                <SelectItem value="A4">A4 - 210x297mm</SelectItem>
+                <SelectItem value="B6">B6 - 128x182mm</SelectItem>
+                <SelectItem value="A6">A6 - 105x148mm</SelectItem>
+                <SelectItem value="Square">Square</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>

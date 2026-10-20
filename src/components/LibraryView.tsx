@@ -7,12 +7,12 @@ import { BookForm } from './BookForm';
 import { CameraCapture } from './CameraCapture';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Search, 
-  Plus, 
-  Download, 
-  Upload, 
-  Library as LibraryIcon, 
+import {
+  Search,
+  Plus,
+  Download,
+  Upload,
+  Library as LibraryIcon,
   Settings as SettingsIcon,
   X,
   SortAsc,
@@ -24,388 +24,400 @@ import {
   Trash2,
   FolderOpen,
   Users,
-  BookOpen,
-  Wallpaper,
-  Sun,
-  Moon,
-  ScanLine,
+  Shield,
+  KeyRound,
   FileJson,
-  QrCode,
   FileSpreadsheet,
+  ScanLine,
+  BarChart2,
+  BookOpen,
+  Layers,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  Play,
+  Pause,
   Heart,
   ExternalLink,
+  FileText,
   ShieldCheck,
   Lock,
-  FileText
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogFooter,
+import {
+  Dialog,
+  DialogContent,
   DialogHeader,
-  DialogTitle, 
-  DialogTrigger 
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
-import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import { QRCodeSVG } from 'qrcode.react';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
-import { AnimatePresence } from 'motion/react';
-import { App as CapApp } from '@capacitor/app';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { Share } from '@capacitor/share';
+import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 
 export function LibraryView() {
   const { t, i18n } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isExportOpen, setIsExportOpen] = useState(false);
-  const [isImportOpen, setIsImportOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [newPasscode, setNewPasscode] = useState('');
-  const [confirmPasscode, setConfirmPasscode] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [sortBy, setSortBy] = useState<'date' | 'alpha' | 'duplicates' | 'author' | 'circle' | 'parody' | 'anthology'>('date');
-  const [showBgCamera, setShowBgCamera] = useState(false);
-  const [showQrScanner, setShowQrScanner] = useState(false);
-  const [sliderDim, setSliderDim] = useState<number | null>(null);
-
-  const galleryInputRef = useRef<HTMLInputElement>(null);
-  const nativeCameraInputRef = useRef<HTMLInputElement>(null);
-
   const books = useLiveQuery(() => db.books.toArray()) || [];
   const settings = useLiveQuery(() => db.settings.get('main'));
 
-  const customBg = settings?.customBackground;
-  const bgDim = settings?.backgroundDim ?? 60;
-  const effectiveDim = sliderDim !== null ? sliderDim : bgDim;
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<'date' | 'alpha' | 'duplicates' | 'author' | 'parody'>('date');
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [showBgCamera, setShowBgCamera] = useState(false);
+  const [showQrScanner, setShowQrScanner] = useState(false);
+
+  // Paginated QR State
+  const [qrPageIndex, setQrPageIndex] = useState(0);
+  const [isQrZoomed, setIsQrZoomed] = useState(false);
+  const [isQrAutoPlay, setIsQrAutoPlay] = useState(false);
+
+  // Ref map to accumulate multi-part QR chunks during scan import
+  const scannedChunksRef = useRef<Record<number, any[]>>({});
+
+  // Background state
+  const [customBg, setCustomBg] = useState<string | null>(null);
+  const [bgDim, setBgDim] = useState<number>(30);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const nativeCameraInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (settings) {
-      setIsDarkMode(!!settings.isDarkMode);
-      if (typeof settings.backgroundDim === 'number') {
-        setSliderDim(settings.backgroundDim);
-      }
+    const savedBg = localStorage.getItem('customBackground');
+    const savedDim = localStorage.getItem('backgroundDim');
+    if (savedBg) setCustomBg(savedBg);
+    if (savedDim) setBgDim(parseInt(savedDim, 10));
+  }, []);
+
+  const handleSetBackground = (bgData: string | null) => {
+    if (bgData) {
+      setCustomBg(bgData);
+      localStorage.setItem('customBackground', bgData);
+    } else {
+      setCustomBg(null);
+      localStorage.removeItem('customBackground');
     }
-  }, [settings]);
+  };
 
-  // System back button & gesture handling
-  useEffect(() => {
-    const backListener = CapApp.addListener('backButton', () => {
-      if (selectedBook) {
-        setSelectedBook(null);
-      } else if (isSettingsOpen) {
-        setIsSettingsOpen(false);
-      } else if (isExportOpen) {
-        setIsExportOpen(false);
-      } else if (isImportOpen) {
-        setIsImportOpen(false);
-      } else if (isAddOpen) {
-        setIsAddOpen(false);
-      } else if (showBgCamera) {
-        setShowBgCamera(false);
-      } else if (showQrScanner) {
-        setShowQrScanner(false);
-      } else if (searchQuery) {
-        setSearchQuery('');
-      } else {
-        CapApp.minimizeApp();
-      }
-    });
+  const handleSetDim = (dim: number) => {
+    setBgDim(dim);
+    localStorage.setItem('backgroundDim', dim.toString());
+  };
 
-    return () => {
-      backListener.then(handler => handler.remove());
-    };
-  }, [selectedBook, isSettingsOpen, isExportOpen, isImportOpen, isAddOpen, showBgCamera, showQrScanner, searchQuery]);
+  const getAutoLockLabel = (time?: number) => {
+    if (time === 0) return t('auto_lock_never', 'Never');
+    if (time === 60000) return t('auto_lock_1m', '1 minute');
+    if (time === 120000) return t('auto_lock_2m', '2 minutes');
+    if (time === 300000) return t('auto_lock_5m', '5 minutes');
+    if (time === 600000) return t('auto_lock_10m', '10 minutes');
+    if (time === 1800000) return t('auto_lock_30m', '30 minutes');
+    return t('auto_lock_minimize', 'Immediately upon minimize');
+  };
+
+  const [newPasscode, setNewPasscode] = useState('');
+  const [confirmPasscode, setConfirmPasscode] = useState('');
 
   const handleUpdatePasscode = async () => {
-    if (newPasscode.length !== 6) {
-      toast.error('Passcode must be 6 digits');
+    if (!newPasscode && !confirmPasscode) {
+      await db.settings.update('main', { passcode: undefined });
+      toast.success(t('passcode_removed', 'Passcode lock removed'));
       return;
     }
+
     if (newPasscode !== confirmPasscode) {
-      toast.error('Passcodes do not match');
+      toast.error(t('passcodes_dont_match', "Passcodes don't match"));
       return;
     }
+
+    if (newPasscode.length !== 6) {
+      toast.error(t('passcode_6_digits', 'Passcode must be 6 digits'));
+      return;
+    }
+
     await db.settings.update('main', { passcode: newPasscode });
-    toast.success('Passcode updated successfully');
+    toast.success(t('passcode_updated', 'Passcode updated successfully!'));
     setNewPasscode('');
     setConfirmPasscode('');
   };
 
-  const handleToggleDarkMode = async () => {
-    const newMode = !isDarkMode;
-    await db.settings.update('main', { isDarkMode: newMode });
-    setIsDarkMode(newMode);
-    toast.success(t('dark_mode') + ` ${newMode ? 'enabled' : 'disabled'}`);
-  };
-
-  const handleLanguageChange = async (lang: string) => {
-    await db.settings.update('main', { language: lang });
-    i18n.changeLanguage(lang);
-    toast.success(t('language') + ' updated');
-  };
-
   const handleBackgroundFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 25 * 1024 * 1024) {
-      toast.error('File size exceeds 25MB limit');
-      return;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleSetBackground(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const result = event.target?.result as string;
-      if (result) {
-        await db.settings.update('main', { customBackground: result });
-        toast.success(t('bg_updated'));
-      }
+  // Live Library Statistics Calculation
+  const stats = useMemo(() => {
+    const total = books.length;
+    const authors = new Set(books.map((b) => b.author?.trim()).filter(Boolean)).size;
+    const circles = new Set(books.map((b) => b.circle?.trim()).filter(Boolean)).size;
+    const parodies = new Set(books.map((b) => b.parody?.trim()).filter(Boolean)).size;
+    const anthologies = books.filter((b) => b.isAnthology).length;
+    const covers = books.filter((b) => b.coverImage).length;
+    const barcodes = books.filter((b) => b.barcode).length;
+
+    const sizeCounts: Record<string, number> = {
+      B5: 0,
+      A5: 0,
+      A4: 0,
+      B6: 0,
+      A6: 0,
+      Square: 0,
+      Other: 0,
     };
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  };
 
-  const handleSetBackground = async (imageData: string) => {
-    await db.settings.update('main', { customBackground: imageData });
-    toast.success(t('bg_updated'));
-  };
-
-  const handleRemoveBackground = async () => {
-    await db.settings.update('main', { customBackground: undefined });
-    toast.success(t('bg_removed'));
-  };
-
-  const handleUpdateBgDim = async (dim: number) => {
-    await db.settings.update('main', { backgroundDim: dim });
-  };
-
-  const { duplicateBarcodes, duplicateTitles } = useMemo(() => {
-    const barcodeCounts = new Map<string, number>();
-    const titleCounts = new Map<string, number>();
-
-    books.forEach(b => {
-      const code = b.barcode?.trim();
-      if (code) {
-        barcodeCounts.set(code, (barcodeCounts.get(code) || 0) + 1);
-      }
-      const titleKey = `${b.title.trim().toLowerCase()}|${(b.author || '').trim().toLowerCase()}`;
-      titleCounts.set(titleKey, (titleCounts.get(titleKey) || 0) + 1);
+    books.forEach((b) => {
+      const sz = b.size || 'B5';
+      sizeCounts[sz] = (sizeCounts[sz] || 0) + 1;
     });
 
-    const dupBarcodes = new Set<string>();
-    barcodeCounts.forEach((count, code) => {
-      if (count > 1) dupBarcodes.add(code);
-    });
-
-    const dupTitles = new Set<string>();
-    titleCounts.forEach((count, key) => {
-      if (count > 1) dupTitles.add(key);
-    });
-
-    return { duplicateBarcodes: dupBarcodes, duplicateTitles: dupTitles };
+    return {
+      total,
+      authors,
+      circles,
+      parodies,
+      anthologies,
+      covers,
+      barcodes,
+      sizeCounts,
+    };
   }, [books]);
 
-  const isBookDuplicate = (book: Book) => {
-    const code = book.barcode?.trim();
-    if (code && duplicateBarcodes.has(code)) return true;
-    const titleKey = `${book.title.trim().toLowerCase()}|${(book.author || '').trim().toLowerCase()}`;
-    if (duplicateTitles.has(titleKey)) return true;
-    return false;
-  };
+  // Paginated QR Chunks for Large Libraries (15 books per chunk for crisp, low-density scanning)
+  const qrChunks = useMemo(() => {
+    if (!books || books.length === 0) return [];
 
-  const filteredBooks = useMemo(() => {
-    const query = searchQuery.toLowerCase();
-    let result = books.filter(book => 
-      book.title.toLowerCase().includes(query) ||
-      (book.translatedTitle || '').toLowerCase().includes(query) ||
-      (book.author || '').toLowerCase().includes(query) ||
-      book.barcode?.toLowerCase().includes(query) ||
-      book.parody?.toLowerCase().includes(query) ||
-      book.circle?.toLowerCase().includes(query)
-    );
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(books.length / itemsPerPage);
+    const chunks: { page: number; total: number; payload: string }[] = [];
 
-    if (sortBy === 'duplicates') {
-      // ONLY show items which are duplicates (by barcode OR exact title & author)
-      result = result.filter(isBookDuplicate);
-      // Group duplicate items together
-      result.sort((a, b) => {
-        const codeA = a.barcode?.trim() || '';
-        const codeB = b.barcode?.trim() || '';
-        if (codeA && codeB && codeA !== codeB) return codeA.localeCompare(codeB);
-        const nameA = `${a.title.toLowerCase()}|${(a.author || '').toLowerCase()}`;
-        const nameB = `${b.title.toLowerCase()}|${(b.author || '').toLowerCase()}`;
-        if (nameA !== nameB) return nameA.localeCompare(nameB);
-        return b.addedAt - a.addedAt;
+    for (let i = 0; i < totalPages; i++) {
+      const pageBooks = books.slice(i * itemsPerPage, (i + 1) * itemsPerPage).map((b) => ({
+        t: b.title,
+        tr: b.translatedTitle || '',
+        a: b.author || '',
+        c: b.circle || '',
+        p: b.parody || '',
+        s: b.size || 'B5',
+        b: b.barcode || '',
+      }));
+
+      const chunkData = {
+        p: i + 1,
+        t: totalPages,
+        b: pageBooks,
+      };
+
+      chunks.push({
+        page: i + 1,
+        total: totalPages,
+        payload: JSON.stringify(chunkData),
       });
-    } else if (sortBy === 'alpha') {
-      result.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === 'author') {
-      result.sort((a, b) => (a.author || '').localeCompare(b.author || ''));
-    } else if (sortBy === 'circle') {
-      result.sort((a, b) => (a.circle || '').localeCompare(b.circle || ''));
-    } else if (sortBy === 'parody') {
-      result.sort((a, b) => (a.parody || '').localeCompare(b.parody || ''));
-    } else if (sortBy === 'anthology') {
-      result = result.filter(book => book.isAnthology);
-      result.sort((a, b) => b.addedAt - a.addedAt); // sort anthologies by date
-    } else {
-      result.sort((a, b) => b.addedAt - a.addedAt);
     }
-    
-    return result;
-  }, [books, searchQuery, sortBy, duplicateBarcodes, duplicateTitles]);
 
-  // Save file to Documents and open Share sheet
-  const saveAndShareJsonFile = async (filename: string, jsonContent: string, successMsg: string) => {
-    try {
-      const result = await Filesystem.writeFile({
-        path: filename,
-        data: jsonContent,
-        directory: Directory.Documents,
-        encoding: Encoding.UTF8,
-      });
+    return chunks;
+  }, [books]);
 
-      toast.success(`${successMsg}! Saved to Documents/${filename}`, { duration: 5500 });
+  // Auto-play QR slideshow timer in zoom mode
+  useEffect(() => {
+    if (!isQrAutoPlay || !isQrZoomed || qrChunks.length <= 1) return;
+    const interval = setInterval(() => {
+      setQrPageIndex((prev) => (prev + 1) % qrChunks.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isQrAutoPlay, isQrZoomed, qrChunks.length]);
 
-      if (result.uri) {
-        try {
-          await Share.share({
-            title: filename,
-            text: `Dolib Backup File: ${filename}`,
-            url: result.uri,
-            dialogTitle: 'Save or Share Backup File',
-          });
-        } catch {
-          // Share sheet dismissed
-        }
+  // Detect duplicate groups
+  const duplicateGroupIds = useMemo(() => {
+    const titleAuthorMap = new Map<string, string[]>();
+    books.forEach((book) => {
+      const key = `${book.title.trim().toLowerCase()}|${(book.author || '').trim().toLowerCase()}`;
+      if (!titleAuthorMap.has(key)) {
+        titleAuthorMap.set(key, []);
       }
-    } catch (err) {
-      console.warn('Native Filesystem save failed, using Web download fallback', err);
-      const blob = new Blob([jsonContent], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success(`${successMsg} (Downloaded ${filename})`, { duration: 5500 });
+      titleAuthorMap.get(key)!.push(book.id!.toString());
+    });
+
+    const duplicateIds = new Set<string>();
+    titleAuthorMap.forEach((ids) => {
+      if (ids.length > 1) {
+        ids.forEach((id) => duplicateIds.add(id));
+      }
+    });
+
+    return duplicateIds;
+  }, [books]);
+
+  // Filter & Sort
+  const filteredBooks = useMemo(() => {
+    let result = books.filter((book) => {
+      const q = search.toLowerCase();
+      return (
+        book.title.toLowerCase().includes(q) ||
+        (book.translatedTitle && book.translatedTitle.toLowerCase().includes(q)) ||
+        (book.author && book.author.toLowerCase().includes(q)) ||
+        (book.circle && book.circle.toLowerCase().includes(q)) ||
+        (book.parody && book.parody.toLowerCase().includes(q)) ||
+        (book.barcode && book.barcode.toLowerCase().includes(q))
+      );
+    });
+
+    if (sort === 'date') {
+      result.sort((a, b) => b.addedAt - a.addedAt);
+    } else if (sort === 'alpha') {
+      result.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sort === 'author') {
+      result.sort((a, b) => (a.author || '').localeCompare(b.author || ''));
+    } else if (sort === 'parody') {
+      result.sort((a, b) => (a.parody || '').localeCompare(b.parody || ''));
+    } else if (sort === 'duplicates') {
+      result = result.filter((book) => duplicateGroupIds.has(book.id!.toString()));
+      result.sort((a, b) => a.title.localeCompare(b.title));
     }
-  };
+
+    return result;
+  }, [books, search, sort, duplicateGroupIds]);
 
   const handleExportCompact = () => {
-    const compactData = books.map(({ coverImage, ...rest }) => rest);
-    const filename = `dolib-compact-backup-${new Date().toISOString().split('T')[0]}.json`;
-    saveAndShareJsonFile(filename, JSON.stringify(compactData, null, 2), 'Metadata backup exported');
+    const compactBooks = books.map(({ id, coverImage, ...rest }) => rest);
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(compactBooks, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `dolib-compact-backup-${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    toast.success(t('export_success', 'Compact backup downloaded!'));
   };
 
   const handleExportFull = () => {
-    const filename = `dolib-full-backup-${new Date().toISOString().split('T')[0]}.json`;
-    saveAndShareJsonFile(filename, JSON.stringify(books, null, 2), 'Full library archive exported');
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(books, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `dolib-full-backup-${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    toast.success(t('export_success', 'Full backup downloaded!'));
   };
 
-  // Import handlers
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const data = JSON.parse(event.target?.result as string);
-        if (Array.isArray(data)) {
-          let count = 0;
-          for (const book of data) {
-            const { id, ...bookWithoutId } = book;
-            await db.books.add(bookWithoutId);
-            count++;
-          }
-          toast.success(`Imported ${count} books`);
-          setIsImportOpen(false);
-        } else if (typeof data === 'object' && data !== null) {
-          const { id, ...bookWithoutId } = data;
-          await db.books.add(bookWithoutId);
-          toast.success(`Imported 1 book`);
-          setIsImportOpen(false);
-        }
-      } catch (err) {
-        toast.error('Invalid export file');
+  const importBooksList = async (importedBooks: any[]) => {
+    let count = 0;
+    for (const b of importedBooks) {
+      if (b.title) {
+        await db.books.add({
+          title: b.title,
+          translatedTitle: b.tr || b.translatedTitle || undefined,
+          author: b.a || b.author || undefined,
+          circle: b.c || b.circle || undefined,
+          barcode: b.b || b.barcode || undefined,
+          parody: b.p || b.parody || undefined,
+          size: b.s || b.size || 'B5',
+          isAnthology: b.isAnthology || false,
+          coverImage: b.coverImage || undefined,
+          addedAt: Date.now(),
+        });
+        count++;
       }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
+    }
+    toast.success(`Successfully imported ${count} books!`);
+    setIsImportOpen(false);
   };
 
-  const handleQrImport = async (scannedData: string) => {
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+    if (e.target.files && e.target.files[0]) {
+      fileReader.readAsText(e.target.files[0], "UTF-8");
+      fileReader.onload = async (event) => {
+        try {
+          const imported = JSON.parse(event.target?.result as string);
+          if (Array.isArray(imported)) {
+            await importBooksList(imported);
+          } else {
+            toast.error(t('import_invalid_format', 'Invalid JSON file format'));
+          }
+        } catch (err) {
+          toast.error(t('import_error', 'Error reading JSON file'));
+        }
+      };
+    }
+  };
+
+  const handleQrImport = (scannedData: string) => {
     try {
       const parsed = JSON.parse(scannedData);
-      if (Array.isArray(parsed)) {
-        let count = 0;
-        for (const item of parsed) {
-          const title = item.title || item.t;
-          const author = item.author || item.a;
-          if (title) {
-            await db.books.add({
-              title,
-              author: author || 'Unknown',
-              addedAt: Date.now()
-            });
-            count++;
+
+      if (parsed.p && parsed.t && Array.isArray(parsed.b)) {
+        // Multi-part paginated chunk
+        scannedChunksRef.current[parsed.p] = parsed.b;
+        const collectedCount = Object.keys(scannedChunksRef.current).length;
+
+        if (collectedCount < parsed.t) {
+          toast.info(`Scanned Page ${parsed.p} of ${parsed.t}. Scan remaining pages to complete import!`);
+          return;
+        }
+
+        // All chunks collected!
+        let allBooks: any[] = [];
+        for (let p = 1; p <= parsed.t; p++) {
+          if (scannedChunksRef.current[p]) {
+            allBooks.push(...scannedChunksRef.current[p]);
           }
         }
-        if (count > 0) {
-          toast.success(`Imported ${count} books from QR code`);
-          setIsImportOpen(false);
-        } else {
-          toast.error('No valid books found in QR code');
-        }
-      } else if (typeof parsed === 'object' && parsed !== null) {
-        const title = parsed.title || parsed.t;
-        const author = parsed.author || parsed.a;
-        if (title) {
-          await db.books.add({
-            title,
-            author: author || 'Unknown',
-            addedAt: Date.now()
-          });
-          toast.success(`Imported "${title}" from QR code`);
-          setIsImportOpen(false);
-        } else {
-          toast.error('Invalid QR code format');
-        }
+        scannedChunksRef.current = {}; // Reset map
+        importBooksList(allBooks);
+      } else if (Array.isArray(parsed)) {
+        importBooksList(parsed);
+      } else {
+        toast.error(t('import_invalid_format', 'Invalid QR code data'));
       }
-    } catch {
-      toast.error('QR code does not contain valid book JSON data');
+    } catch (e) {
+      toast.error(t('import_error', 'Error parsing QR code'));
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (confirm(t('delete_all_confirm', 'Are you sure you want to delete all data? This cannot be undone.'))) {
+      await db.books.clear();
+      toast.success(t('delete_all_success', 'All data cleared'));
+      setIsSettingsOpen(false);
     }
   };
 
   return (
-    <div 
-      className={cn(
-        "min-h-svh relative transition-all duration-300",
-        customBg ? "bg-cover bg-center bg-fixed bg-no-repeat" : "bg-background"
-      )}
-      style={customBg ? { backgroundImage: `url(${customBg})` } : undefined}
-    >
-      {/* Background tint overlay */}
+    <div className="relative min-h-svh bg-background overflow-x-hidden">
+      {/* Custom Background Image Layer */}
       {customBg && (
-        <div 
-          className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-150"
-          style={{
-            backgroundColor: isDarkMode ? '#000000' : '#ffffff',
-            opacity: isDarkMode ? (effectiveDim / 100) : (effectiveDim * 0.35 / 100),
-            backdropFilter: 'blur(1px)'
-          }}
-        />
+        <div
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-300 pointer-events-none"
+          style={{ backgroundImage: `url(${customBg})` }}
+        >
+          <div
+            className="absolute inset-0 bg-background transition-opacity duration-300"
+            style={{ opacity: bgDim / 100 }}
+          />
+        </div>
       )}
 
       <div className="relative z-1 flex flex-col min-h-svh">
@@ -424,7 +436,12 @@ export function LibraryView() {
             </div>
             <h1 className="text-xl font-bold tracking-tight">{t('app_name')}</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            {/* Library Statistics Icon */}
+            <Button variant="ghost" size="icon" onClick={() => setIsStatsOpen(true)} title={t('library_stats', 'Library Statistics')}>
+              <BarChart2 className="w-5 h-5 text-foreground" />
+            </Button>
+            {/* Settings Icon */}
             <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)} title={t('settings')}>
               <SettingsIcon className="w-5 h-5" />
             </Button>
@@ -448,282 +465,295 @@ export function LibraryView() {
                 placeholder={t('search_placeholder')}
                 className={cn(
                   "pl-10 h-11 border-none focus-visible:ring-1",
-                  customBg ? "bg-card/80 backdrop-blur-xs" : "bg-muted/50"
+                  customBg ? "bg-background/80 backdrop-blur-md" : "bg-muted/50"
                 )}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
-              {searchQuery && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                  onClick={() => setSearchQuery('')}
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
-                </Button>
+                </button>
               )}
             </div>
-            <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+
+            <Select value={sort} onValueChange={(v: any) => setSort(v)}>
               <SelectTrigger className={cn(
-                "w-[130px] h-11 border-none",
-                customBg ? "bg-card/80 backdrop-blur-xs" : "bg-muted/50"
+                "w-[130px] h-11 border-none font-medium text-xs",
+                customBg ? "bg-background/80 backdrop-blur-md" : "bg-muted/50"
               )}>
-                <SelectValue>
-                  <div className="flex items-center gap-2">
-                    {sortBy === 'date' && <Calendar className="w-4 h-4" />}
-                    {sortBy === 'alpha' && <SortAsc className="w-4 h-4" />}
-                    {sortBy === 'duplicates' && <Copy className="w-4 h-4" />}
-                    {sortBy === 'author' && <SortAsc className="w-4 h-4" />}
-                    {sortBy === 'circle' && <Users className="w-4 h-4" />}
-                    {sortBy === 'parody' && <FolderOpen className="w-4 h-4" />}
-                    {sortBy === 'anthology' && <BookOpen className="w-4 h-4" />}
-                    <span>
-                      {sortBy === 'date' && t('sort_date')}
-                      {sortBy === 'alpha' && t('sort_alpha')}
-                      {sortBy === 'duplicates' && t('sort_duplicates')}
-                      {sortBy === 'author' && t('sort_author', 'Author')}
-                      {sortBy === 'circle' && t('sort_circle', 'Circle')}
-                      {sortBy === 'parody' && t('sort_parody', 'Parody/Category')}
-                      {sortBy === 'anthology' && t('sort_anthology', 'Anthology')}
-                    </span>
-                  </div>
-                </SelectValue>
+                <SelectValue placeholder={t('sort_by')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="date">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{t('sort_date')}</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="alpha">
-                  <div className="flex items-center gap-2">
-                    <SortAsc className="w-4 h-4" />
-                    <span>{t('sort_alpha')}</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="author">
-                  <div className="flex items-center gap-2">
-                    <SortAsc className="w-4 h-4" />
-                    <span>{t('sort_author', 'Author')}</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="circle">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    <span>{t('sort_circle', 'Circle')}</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="parody">
-                  <div className="flex items-center gap-2">
-                    <FolderOpen className="w-4 h-4" />
-                    <span>{t('sort_parody', 'Parody / Category')}</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="anthology">
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    <span>{t('sort_anthology', 'Anthology')}</span>
-                  </div>
-                </SelectItem>
+                <SelectItem value="date">{t('sort_date')}</SelectItem>
+                <SelectItem value="alpha">{t('sort_alpha')}</SelectItem>
+                <SelectItem value="author">{t('sort_author', 'Author')}</SelectItem>
+                <SelectItem value="parody">{t('sort_parody', 'Parody / Category')}</SelectItem>
                 <SelectItem value="duplicates">
-                  <div className="flex items-center gap-2">
-                    <Copy className="w-4 h-4" />
-                    <span>{t('sort_duplicates')}</span>
-                  </div>
+                  <span className="flex items-center gap-1.5 text-destructive font-medium">
+                    <Copy className="w-3.5 h-3.5" />
+                    {t('sort_duplicates')}
+                  </span>
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {/* Active Duplicates Filter Banner */}
+          {sort === 'duplicates' && (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+              <div className="flex items-center gap-2">
+                <Copy className="w-4 h-4 shrink-0" />
+                <span>Showing {filteredBooks.length} potential duplicate entries</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-[11px] text-destructive hover:bg-destructive/10"
+                onClick={() => setSort('date')}
+              >
+                Clear
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* Book Grid */}
-        <div className="px-4 pb-28 flex-1">
-          {filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 py-2">
-              {filteredBooks.map(book => (
+        {/* Book Grid / List View */}
+        <div className="flex-1 p-4 pt-0">
+          {filteredBooks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-6 space-y-4">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden shadow-xs ring-1 ring-border/50 bg-background">
+                <img
+                  src="/icon.png"
+                  alt="Logo"
+                  className="w-full h-full object-cover select-none"
+                />
+              </div>
+              <div className="space-y-1 max-w-xs">
+                <h3 className="font-semibold text-lg">{t('no_books')}</h3>
+                <p className="text-xs text-muted-foreground">{t('no_books_desc')}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-24">
+              {filteredBooks.map((book) => (
                 <BookCard
                   key={book.id}
                   book={book}
-                  isDuplicate={isBookDuplicate(book)}
+                  isDuplicate={duplicateGroupIds.has(book.id!.toString())}
                   onClick={() => setSelectedBook(book)}
                 />
               ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center p-8 opacity-75">
-              <div className="w-24 h-24 bg-card/70 backdrop-blur-xs rounded-3xl flex items-center justify-center mb-6 overflow-hidden shadow-sm">
-                <img src="/icon.png" alt="Logo" className="w-full h-full object-cover" />
-              </div>
-              <p className="text-lg font-medium">{t('no_books')}</p>
-              <p className="text-sm text-muted-foreground">{t('no_books_desc')}</p>
             </div>
           )}
         </div>
 
         {/* Floating Action Button */}
-        <div className="fixed bottom-6 right-6 z-20 pb-[env(safe-area-inset-bottom)]">
-          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-            <DialogTrigger asChild>
-              <Button size="lg" className="h-14 w-14 rounded-full shadow-lg">
-                <Plus className="w-6 h-6" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{t('add_book')}</DialogTitle>
-              </DialogHeader>
-              <BookForm onClose={() => setIsAddOpen(false)} />
-            </DialogContent>
-          </Dialog>
-        </div>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="fixed z-20"
+          style={{
+            bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 1.25rem))',
+            right: 'max(1.5rem, calc(env(safe-area-inset-right, 0px) + 1.25rem))',
+          }}
+        >
+          <Button
+            size="icon"
+            className="w-14 h-14 rounded-full shadow-xl bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all"
+            onClick={() => setIsAddOpen(true)}
+          >
+            <Plus className="w-7 h-7" />
+          </Button>
+        </motion.div>
 
-        {/* Book Details Dialog */}
+        {/* Add Book Dialog */}
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md">
+            <DialogHeader>
+              <DialogTitle>{t('add_book')}</DialogTitle>
+            </DialogHeader>
+            <BookForm onClose={() => setIsAddOpen(false)} />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Book Dialog */}
         <Dialog open={!!selectedBook} onOpenChange={(open) => !open && setSelectedBook(null)}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="max-h-[90vh] overflow-y-auto max-w-md">
             <DialogHeader>
               <DialogTitle>{t('edit_book')}</DialogTitle>
             </DialogHeader>
             {selectedBook && (
-              <BookForm
-                book={selectedBook}
-                onClose={() => setSelectedBook(null)}
-              />
+              <BookForm book={selectedBook} onClose={() => setSelectedBook(null)} />
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Library Statistics Modal */}
+        <Dialog open={isStatsOpen} onOpenChange={setIsStatsOpen}>
+          <DialogContent className="max-w-md max-h-[88vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-base">
+                <BarChart2 className="w-5 h-5 text-primary" />
+                <span>{t('library_stats', 'Library Statistics')}</span>
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-5 py-2">
+              {/* Metric Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/20 text-primary flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight">{stats.total}</div>
+                    <div className="text-[11px] text-muted-foreground font-medium">{t('total_books', 'Total Books')}</div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-accent/50 border border-border flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-muted text-foreground flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight">{stats.authors}</div>
+                    <div className="text-[11px] text-muted-foreground font-medium">{t('unique_authors', 'Unique Artists')}</div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-accent/50 border border-border flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-muted text-foreground flex items-center justify-center shrink-0">
+                    <FolderOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight">{stats.circles}</div>
+                    <div className="text-[11px] text-muted-foreground font-medium">{t('unique_circles', 'Unique Circles')}</div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-accent/50 border border-border flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-muted text-foreground flex items-center justify-center shrink-0">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight">{stats.parodies}</div>
+                    <div className="text-[11px] text-muted-foreground font-medium">{t('unique_parodies', 'Unique Categories')}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Book Size Distribution */}
+              <div className="space-y-2.5 p-4 rounded-xl bg-muted/40 border border-border">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t('size_distribution', 'Book Size Distribution')}
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {Object.entries(stats.sizeCounts).map(([sz, cnt]) => (
+                    <div key={sz} className="flex justify-between items-center p-2 rounded-lg bg-background border border-border/60">
+                      <span className="font-semibold font-mono text-muted-foreground">{sz}</span>
+                      <span className="font-bold text-foreground bg-muted px-2 py-0.5 rounded-md">{cnt}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Collection Details */}
+              <div className="space-y-2 p-4 rounded-xl bg-muted/40 border border-border text-xs space-y-2">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                  {t('collection_details', 'Collection Details')}
+                </h4>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">{t('books_with_covers', 'Covers Saved')}</span>
+                  <span className="font-bold">{stats.covers} / {stats.total}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">{t('anthologies_count', 'Anthologies')}</span>
+                  <span className="font-bold">{stats.anthologies}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Barcodes Registered</span>
+                  <span className="font-bold">{stats.barcodes}</span>
+                </div>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
 
         {/* Settings Dialog */}
         <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader className="sticky -top-4 -mx-4 px-4 pt-4 pb-2 bg-popover/95 backdrop-blur-xs z-10 border-b border-border/40">
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
               <DialogTitle>{t('settings')}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-6 pt-2 pb-3">
-              
 
+            <div className="space-y-6 py-4">
+              {/* Appearance Section */}
               <div className="space-y-4">
-                <h3 className="text-sm font-medium">{t('language')}</h3>
-                <Select value={i18n.language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-full h-12 bg-muted/30">
-                    <div className="flex items-center gap-3">
-                      <Languages className="w-4 h-4 text-muted-foreground" />
-                      <SelectValue />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="ja">日本語 (Japanese)</SelectItem>
-                    <SelectItem value="es">Español (Spanish)</SelectItem>
-                    <SelectItem value="zh">中文 (Chinese)</SelectItem>
-                    <SelectItem value="fr">Français (French)</SelectItem>
-                    <SelectItem value="de">Deutsch (German)</SelectItem>
-                    <SelectItem value="ko">한국어 (Korean)</SelectItem>
-                    <SelectItem value="pt">Português (Portuguese)</SelectItem>
-                    <SelectItem value="it">Italiano (Italian)</SelectItem>
-                    <SelectItem value="ru">Русский (Russian)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t('appearance')}</h4>
 
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium">{t('appearance')}</h3>
-                <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                      <LibraryIcon className="w-4 h-4 text-primary-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{t('dark_mode')}</p>
-                      <p className="text-xs text-muted-foreground">{t('appearance')}</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant={isDarkMode ? "default" : "outline"}
-                    onClick={handleToggleDarkMode}
-                  >
-                    {isDarkMode ? t('on') : t('off')}
-                  </Button>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="dark-mode" className="text-sm font-medium cursor-pointer">{t('dark_mode')}</Label>
+                  <Switch
+                    id="dark-mode"
+                    checked={settings?.isDarkMode ?? true}
+                    onCheckedChange={(checked) => db.settings.update('main', { isDarkMode: checked })}
+                  />
                 </div>
 
-                {/* Custom Wallpaper / Background */}
+                {/* Custom Background Image Setting */}
                 <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Wallpaper className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">{t('custom_background')}</span>
-                    </div>
+                  <Label className="text-sm font-medium flex items-center justify-between">
+                    <span>Custom Wallpaper Background</span>
                     {customBg && (
-                      <Button 
+                      <Button
                         variant="ghost"
                         size="sm"
-                        className="text-xs text-destructive hover:text-destructive h-7 px-2"
-                        onClick={handleRemoveBackground}
+                        className="h-6 text-[11px] text-destructive hover:bg-destructive/10 px-2"
+                        onClick={() => handleSetBackground(null)}
                       >
-                        <Trash2 className="w-3.5 h-3.5 mr-1" />
-                        {t('remove_background')}
+                        Reset
                       </Button>
                     )}
-                  </div>
+                  </Label>
 
                   {customBg ? (
-                    <div className="relative h-28 rounded-xl overflow-hidden border border-border group shadow-sm bg-muted">
-                      <img src={customBg} alt="Background preview" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
+                    <div className="relative w-full h-24 rounded-xl overflow-hidden border bg-cover bg-center" style={{ backgroundImage: `url(${customBg})` }}>
+                      <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center">
                         <Button
-                          size="sm"
                           variant="secondary"
-                          className="h-8 text-xs rounded-lg shadow bg-background/90 hover:bg-background"
+                          size="sm"
+                          className="h-8 text-xs gap-1.5 bg-black/60 text-white hover:bg-black/80"
                           onClick={() => galleryInputRef.current?.click()}
                         >
-                          <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
-                          {t('choose_from_gallery')}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-8 text-xs rounded-lg shadow bg-background/90 hover:bg-background"
-                          onClick={() => setShowBgCamera(true)}
-                        >
-                          <Camera className="w-3.5 h-3.5 mr-1.5" />
-                          {t('take_photo')}
+                          <ImageIcon className="w-3.5 h-3.5" />
+                          <span>Change Wallpaper</span>
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex flex-col items-center justify-center text-center gap-2.5">
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                        <Wallpaper className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium">{t('custom_background')}</p>
-                        <p className="text-[11px] text-muted-foreground max-w-[240px] leading-relaxed">
-                          {t('custom_bg_desc')}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 pt-1">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 text-xs gap-1.5 bg-background hover:bg-muted"
-                          onClick={() => galleryInputRef.current?.click()}
-                        >
-                          <FolderOpen className="w-3.5 h-3.5 text-primary" />
-                          <span>{t('choose_from_gallery')}</span>
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-8 text-xs gap-1.5 bg-background hover:bg-muted"
-                          onClick={() => setShowBgCamera(true)}
-                        >
-                          <Camera className="w-3.5 h-3.5 text-primary" />
-                          <span>{t('take_photo')}</span>
-                        </Button>
-                      </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-10 text-xs gap-1.5"
+                        onClick={() => galleryInputRef.current?.click()}
+                      >
+                        <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                        <span>Gallery / GIF</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-10 text-xs gap-1.5"
+                        onClick={() => setShowBgCamera(true)}
+                      >
+                        <Camera className="w-3.5 h-3.5 text-primary" />
+                        <span>{t('take_photo')}</span>
+                      </Button>
                     </div>
                   )}
 
@@ -750,201 +780,227 @@ export function LibraryView() {
                   {customBg && (
                     <div className="space-y-2 pt-1">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground font-medium">{t('bg_dim')}</span>
-                        <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted text-foreground">
-                          {effectiveDim}%
-                        </span>
+                        <span className="text-muted-foreground font-medium">Background Dim</span>
+                        <span className="font-mono text-muted-foreground">{bgDim}%</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Sun className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <input
-                          type="range"
-                          min="0"
-                          max="95"
-                          step="1"
-                          value={effectiveDim}
-                          onChange={(e) => {
-                            const val = Number(e.target.value);
-                            setSliderDim(val);
-                            handleUpdateBgDim(val);
-                          }}
-                          className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        />
-                        <Moon className="w-4 h-4 text-muted-foreground shrink-0" />
-                      </div>
+                      <Slider
+                        value={[bgDim]}
+                        onValueChange={(vals) => handleSetDim(vals[0])}
+                        min={0}
+                        max={90}
+                        step={5}
+                      />
                     </div>
                   )}
                 </div>
+
+                <div className="space-y-2 pt-1">
+                  <Label htmlFor="language" className="text-sm font-medium">{t('language')}</Label>
+                  <Select
+                    value={settings?.language || 'en'}
+                    onValueChange={(val) => db.settings.update('main', { language: val })}
+                  >
+                    <SelectTrigger id="language" className="w-full h-10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="ja">日本語</SelectItem>
+                      <SelectItem value="es">Español</SelectItem>
+                      <SelectItem value="zh">中文</SelectItem>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="de">Deutsch</SelectItem>
+                      <SelectItem value="ko">한국어</SelectItem>
+                      <SelectItem value="pt">Português</SelectItem>
+                      <SelectItem value="it">Italiano</SelectItem>
+                      <SelectItem value="ru">Русский</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium">{t('security')}</h3>
-                <div className="space-y-2">
+              {/* Security Section */}
+              <div className="space-y-4 pt-2 border-t">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t('security')}</h4>
+
+                <div className="space-y-3">
                   <Input
                     type="password"
-                    placeholder={t('passcode_lock')}
+                    inputMode="numeric"
                     maxLength={6}
+                    placeholder={t('passcode_lock', 'Passcode Lock')}
                     value={newPasscode}
                     onChange={(e) => setNewPasscode(e.target.value.replace(/\D/g, ''))}
+                    className="h-10 text-sm"
                   />
+
                   <Input
                     type="password"
-                    placeholder={t('confirm_passcode')}
+                    inputMode="numeric"
                     maxLength={6}
+                    placeholder={t('confirm_passcode', 'Confirm new passcode')}
                     value={confirmPasscode}
                     onChange={(e) => setConfirmPasscode(e.target.value.replace(/\D/g, ''))}
+                    className="h-10 text-sm"
                   />
-                  <Button className="w-full" onClick={handleUpdatePasscode}>
-                    {t('update')} {t('passcode_lock')}
+
+                  <Button
+                    variant="secondary"
+                    className="w-full h-10 font-semibold text-sm bg-secondary hover:bg-secondary/80 text-foreground"
+                    onClick={handleUpdatePasscode}
+                  >
+                    {t('update_passcode_lock', 'Update Passcode Lock')}
                   </Button>
                 </div>
 
-                  <div className="pt-4 border-t border-border/40 space-y-2">
-                    <p className="text-sm font-medium">{t('auto_lock', 'Auto-Lock Library')}</p>
-                    <Select
-                      value={settings?.autoLockTime?.toString() || '-1'}
-                      onValueChange={(v) => {
-                      db.settings.update('main', { autoLockTime: parseInt(v) });
-                      toast.success(t('settings_updated', 'Settings updated!'));
-                    }}
-                    >
-                      <SelectTrigger className="w-full h-11 bg-muted/30">
-                        <SelectValue>
-                          {settings?.autoLockTime === 0 && t('auto_lock_never', 'Never')}
-                          {(settings?.autoLockTime === undefined || settings?.autoLockTime === -1) && t('auto_lock_minimize', 'Immediately upon minimize')}
-                          {settings?.autoLockTime === 60000 && t('auto_lock_1m', '1 minute')}
-                          {settings?.autoLockTime === 120000 && t('auto_lock_2m', '2 minutes')}
-                          {settings?.autoLockTime === 300000 && t('auto_lock_5m', '5 minutes')}
-                          {settings?.autoLockTime === 600000 && t('auto_lock_10m', '10 minutes')}
-                          {settings?.autoLockTime === 1800000 && t('auto_lock_30m', '30 minutes')}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">{t('auto_lock_never', 'Never')}</SelectItem>
-                        <SelectItem value="-1">{t('auto_lock_minimize', 'Immediately upon minimize')}</SelectItem>
-                        <SelectItem value="60000">{t('auto_lock_1m', '1 minute')}</SelectItem>
-                        <SelectItem value="120000">{t('auto_lock_2m', '2 minutes')}</SelectItem>
-                        <SelectItem value="300000">{t('auto_lock_5m', '5 minutes')}</SelectItem>
-                        <SelectItem value="600000">{t('auto_lock_10m', '10 minutes')}</SelectItem>
-                        <SelectItem value="1800000">{t('auto_lock_30m', '30 minutes')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
+                <div className="pt-2 border-t space-y-2">
+                  <Label htmlFor="auto-lock" className="text-sm font-semibold">{t('auto_lock', 'Auto-Lock Library')}</Label>
+                  <Select
+                    value={(settings?.autoLockTime ?? -1).toString()}
+                    onValueChange={(v) => db.settings.update('main', { autoLockTime: parseInt(v, 10) })}
+                  >
+                    <SelectTrigger id="auto-lock" className="w-full h-11 text-sm font-medium">
+                      <SelectValue>{getAutoLockLabel(settings?.autoLockTime)}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">{t('auto_lock_never', 'Never')}</SelectItem>
+                      <SelectItem value="-1">{t('auto_lock_minimize', 'Immediately upon minimize')}</SelectItem>
+                      <SelectItem value="60000">{t('auto_lock_1m', '1 minute')}</SelectItem>
+                      <SelectItem value="120000">{t('auto_lock_2m', '2 minutes')}</SelectItem>
+                      <SelectItem value="300000">{t('auto_lock_5m', '5 minutes')}</SelectItem>
+                      <SelectItem value="600000">{t('auto_lock_10m', '10 minutes')}</SelectItem>
+                      <SelectItem value="1800000">{t('auto_lock_30m', '30 minutes')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="pt-4 border-t space-y-2">
-                <h3 className="text-sm font-medium">{t('about')}</h3>
-                <div className="p-3 rounded-lg bg-muted/30 border border-dashed space-y-3">
+              {/* Data Management Section */}
+              <div className="space-y-3 pt-2 border-t">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t('data_management')}</h4>
+
+                <Button
+                  variant="destructive"
+                  className="w-full justify-start h-10 gap-2 font-normal"
+                  onClick={handleDeleteAll}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{t('delete_all')}</span>
+                </Button>
+              </div>
+
+              {/* About Section */}
+              <div className="space-y-3 pt-2 border-t">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t('about', 'About')}
+                </h4>
+
+                <div className="p-3.5 bg-muted/30 rounded-2xl border border-dashed border-border space-y-3 text-xs leading-relaxed">
                   <div className="flex gap-3 items-start">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-background border overflow-hidden shrink-0 shadow-xs">
                       <img src="/icon.png" alt="Logo" className="w-full h-full object-cover" />
                     </div>
-                    <div>
-                      <p className="text-xs leading-relaxed text-muted-foreground italic">
-                        {t('about_desc')}
+                    <div className="space-y-1">
+                      <p className="text-muted-foreground italic leading-tight">
+                        {t('about_desc', "This app was vibe-coded. Let me know if you find a bug from the app store's contact publisher form~")}
                       </p>
-                      <p className="text-[10px] mt-2 font-medium text-primary/70">
-                        {t('prompter')}
-                      </p>
-                      <p className="text-[10px] mt-0.5 text-muted-foreground">
-                        {t('created_with')}
-                      </p>
+                      <div className="text-[11px] text-muted-foreground/80 font-medium">
+                        <div>{t('prompter', 'Prompter: Takcody')}</div>
+                        <div>{t('created_with', 'Created using Google AI Studio and Gemini')}</div>
+                      </div>
                     </div>
                   </div>
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-full h-8 text-xs gap-1.5 border-dashed">
+                      <Button
+                        variant="outline"
+                        className="w-full h-9 text-xs gap-2 font-medium bg-background hover:bg-muted"
+                      >
                         <FileText className="w-3.5 h-3.5 text-primary" />
-                        <span>{t('privacy_terms')}</span>
+                        <span>{t('freeware_title', 'Freeware License & Privacy Policy')}</span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-xs sm:max-w-sm max-h-[80vh] overflow-y-auto">
+                    <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
                           <FileText className="w-4 h-4 text-primary shrink-0" />
-                          {t('freeware_title')}
+                          {t('freeware_title', 'Freeware License & Privacy Policy')}
                         </DialogTitle>
                       </DialogHeader>
                       <div className="space-y-3 text-xs text-muted-foreground leading-relaxed py-1">
                         <section className="bg-muted/40 p-2.5 rounded-lg border border-border/50">
                           <h4 className="font-semibold text-foreground text-xs mb-1 flex items-center gap-1.5">
                             <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
-                            {t('freeware_license')}
+                            {t('freeware_license', 'Freeware License')}
                           </h4>
-                          <p>
-                            {t('freeware_desc')}
-                          </p>
+                          <p>{t('freeware_desc', 'Dolib is free software provided "as-is" without warranty of any kind.')}</p>
                         </section>
 
                         <section className="bg-muted/40 p-2.5 rounded-lg border border-border/50">
                           <h4 className="font-semibold text-foreground text-xs mb-1 flex items-center gap-1.5">
                             <Lock className="w-3.5 h-3.5 text-primary shrink-0" />
-                            {t('privacy_policy')}
+                            {t('privacy_policy', 'Privacy & Offline Policy')}
                           </h4>
                           <ul className="list-disc pl-3.5 space-y-1 mt-1 text-[11px]">
-                            <li>{t('privacy_point_1')}</li>
-                            <li>{t('privacy_point_2')}</li>
-                            <li>{t('privacy_point_3')}</li>
-                            <li>{t('privacy_point_4')}</li>
+                            <li>{t('privacy_point_1', '100% Local Storage: All data stays on your device.')}</li>
+                            <li>{t('privacy_point_2', 'No tracking or analytics.')}</li>
+                            <li>{t('privacy_point_3', 'Complete offline capabilities.')}</li>
+                            <li>{t('privacy_point_4', 'Complete user data control.')}</li>
                           </ul>
                         </section>
                       </div>
-                      <DialogFooter showCloseButton />
                     </DialogContent>
                   </Dialog>
                 </div>
               </div>
 
-              <div className="pt-4 border-t space-y-2">
-                <h3 className="text-sm font-medium">{t('support_me')}</h3>
-                <div className="p-3 rounded-lg bg-muted/30 border border-dashed flex items-center justify-between gap-3">
+              {/* Support Me Section */}
+              <div className="space-y-3 pt-2 border-t">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t('support_me', 'Support Me')}
+                </h4>
+
+                <div className="p-3.5 bg-muted/30 rounded-2xl border border-dashed border-border flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
-                      <Heart className="w-4 h-4 fill-rose-500/20" />
+                    <div className="w-10 h-10 rounded-full bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
+                      <Heart className="w-5 h-5 fill-current" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-foreground">Ko-fi</p>
-                      <a
-                        href="https://ko-fi.com/takcody"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary hover:underline break-all block"
-                      >
+                      <div className="font-semibold text-xs text-foreground">Ko-fi</div>
+                      <div className="text-[11px] text-muted-foreground truncate font-mono">
                         https://ko-fi.com/takcody
-                      </a>
+                      </div>
                     </div>
                   </div>
-                  <a
-                    href="https://ko-fi.com/takcody"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0"
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 px-3.5 text-xs gap-1.5 font-medium shrink-0 bg-background"
+                    onClick={() => window.open('https://ko-fi.com/takcody', '_blank')}
                   >
-                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
-                      <span>Ko-fi</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </Button>
-                  </a>
+                    <span>Ko-fi</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                  </Button>
                 </div>
               </div>
             </div>
           </DialogContent>
         </Dialog>
 
-        {/* Export Dialog */}
+        {/* Export Dialog with Paginated QR Chunks */}
         <Dialog open={isExportOpen} onOpenChange={setIsExportOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>{t('export_library')}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-5 py-3">
+            <div className="space-y-4 py-2">
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {t('export_mode_desc')}
               </p>
 
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-2.5">
                 <Button variant="outline" className="h-auto p-3 flex items-start gap-3 text-left justify-start" onClick={handleExportCompact}>
                   <FileJson className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
@@ -971,15 +1027,129 @@ export function LibraryView() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-3">
-                <div className="p-3 bg-white rounded-xl shadow-xs border">
-                  <QRCodeSVG value={JSON.stringify(books.map(b => ({ t: b.title, a: b.author || '' }))).slice(0, 2000)} size={180} />
+              {/* Paginated QR Code Display */}
+              {qrChunks.length > 0 && (
+                <div className="flex flex-col items-center gap-3 pt-1">
+                  <div
+                    onClick={() => setIsQrZoomed(true)}
+                    className="p-3.5 bg-white rounded-2xl shadow-md border cursor-pointer group hover:ring-2 hover:ring-primary transition-all relative"
+                    title={t('qr_tap_zoom', 'Tap QR code to enlarge')}
+                  >
+                    <QRCodeSVG
+                      value={qrChunks[qrPageIndex]?.payload || ''}
+                      size={180}
+                      level="M"
+                      includeMargin={false}
+                    />
+                    <div className="absolute bottom-2 right-2 bg-black/70 text-white rounded-md p-1 backdrop-blur-xs opacity-80 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+
+                  {/* Pagination Controls */}
+                  {qrChunks.length > 1 && (
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-8 h-8 rounded-full"
+                        onClick={() => setQrPageIndex((prev) => (prev - 1 + qrChunks.length) % qrChunks.length)}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+
+                      <span className="text-xs font-semibold font-mono text-muted-foreground">
+                        {t('qr_page_indicator', { current: qrPageIndex + 1, total: qrChunks.length })}
+                      </span>
+
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-8 h-8 rounded-full"
+                        onClick={() => setQrPageIndex((prev) => (prev + 1) % qrChunks.length)}
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+
+                  <p className="text-[10px] text-center text-muted-foreground max-w-[240px]">
+                    {t('qr_tap_zoom', 'Tap QR code to enlarge for easy scanning')}
+                  </p>
                 </div>
-                <p className="text-[10px] text-center text-muted-foreground max-w-[220px]">
-                  {t('qr_share_desc')}
-                </p>
-              </div>
+              )}
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Full Screen Enlarge QR Zoom Dialog */}
+        <Dialog open={isQrZoomed} onOpenChange={setIsQrZoomed}>
+          <DialogContent className="max-w-md p-6 bg-black/95 text-white border-none z-[100] flex flex-col items-center justify-between min-h-[80vh]">
+            <DialogHeader className="w-full flex flex-row items-center justify-between">
+              <DialogTitle className="text-sm font-semibold tracking-wide text-white/90">
+                {t('export_library')} — {t('qr_page_indicator', { current: qrPageIndex + 1, total: qrChunks.length })}
+              </DialogTitle>
+            </DialogHeader>
+
+            {/* High Contrast Zoomed QR Code */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-6 my-auto py-4">
+              <div
+                className="p-5 bg-white rounded-3xl shadow-2xl border-4 border-white/20 cursor-pointer"
+                onClick={() => {
+                  if (qrChunks.length > 1) {
+                    setQrPageIndex((prev) => (prev + 1) % qrChunks.length);
+                  }
+                }}
+              >
+                <QRCodeSVG
+                  value={qrChunks[qrPageIndex]?.payload || ''}
+                  size={260}
+                  level="L"
+                  includeMargin={false}
+                />
+              </div>
+
+              {qrChunks.length > 1 && (
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white border-none"
+                    onClick={() => setQrPageIndex((prev) => (prev - 1 + qrChunks.length) % qrChunks.length)}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </Button>
+
+                  <Button
+                    variant={isQrAutoPlay ? 'default' : 'secondary'}
+                    size="sm"
+                    className={cn(
+                      "rounded-full h-9 px-4 text-xs gap-1.5 transition-colors border-none",
+                      isQrAutoPlay ? "bg-amber-400 text-black font-semibold" : "bg-white/20 text-white"
+                    )}
+                    onClick={() => setIsQrAutoPlay(!isQrAutoPlay)}
+                  >
+                    {isQrAutoPlay ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                    <span>{t('qr_auto_play', 'Auto-Play 3s')}</span>
+                  </Button>
+
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white border-none"
+                    onClick={() => setQrPageIndex((prev) => (prev + 1) % qrChunks.length)}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <p className="text-xs text-white/70 text-center max-w-xs">
+              {qrChunks.length > 1
+                ? "Hold scanning phone over screen. Auto-plays through pages sequentially!"
+                : "Hold scanning camera over screen to transfer library."}
+            </p>
           </DialogContent>
         </Dialog>
 

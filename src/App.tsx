@@ -102,7 +102,9 @@ export default function App() {
 
   useEffect(() => {
     if (settings) {
-      if (settings.isDarkMode) {
+      const systemDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = settings.isDarkMode ?? systemDark;
+      if (isDark) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');

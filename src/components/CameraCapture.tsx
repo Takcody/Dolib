@@ -7,12 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { CropAdjuster } from './CropAdjuster';
 import {
-  QuadCorners,
-  detectBookCorners,
-  isCornersStable,
-  getDefaultCorners,
-} from '@/lib/documentScanner';
-import {
   MultiFormatReader,
   BarcodeFormat,
   DecodeHintType,
@@ -40,6 +34,7 @@ export function CameraCapture({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rotCanvasRef = useRef<HTMLCanvasElement>(null);
+  const prevFramePixelsRef = useRef<Uint8ClampedArray | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const zxingReaderRef = useRef<MultiFormatReader | null>(null);
@@ -54,13 +49,10 @@ export function CameraCapture({
   const [torchOn, setTorchOn] = useState(false);
   const [detectedCode, setDetectedCode] = useState<string | null>(null);
 
-  // Auto-Crop & Book Corner Detection state
+  // Auto-Capture & Motion Stability state
   const [autoCaptureEnabled, setAutoCaptureEnabled] = useState(true);
-  const [detectedCorners, setDetectedCorners] = useState<QuadCorners | null>(null);
   const [stableProgress, setStableProgress] = useState(0); // 0.0 to 1.0
-  const [showCropAdjuster, setShowCropAdjuster] = useState(false);
 
-  const prevCornersRef = useRef<QuadCorners | null>(null);
   const steadyTimeRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(Date.now());
 
@@ -275,27 +267,6 @@ export function CameraCapture({
                 zxing.reset();
               }
             }
-
-            const maxW = 1280;
-            const fullW = Math.min(vw, maxW);
-            const fullH = Math.round((fullW / vw) * vh);
-            canvas.width = fullW;
-            canvas.height = fullH;
-            ctx.drawImage(video, 0, 0, vw, vh, 0, 0, fullW, fullH);
-
-            try {
-              const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
-              const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-              const result = zxing.decodeWithState(binaryBitmap);
-              zxing.reset();
-              if (result && result.getText()) {
-                hasScannedRef.current = true;
-                handleScanSuccess(result.getText());
-                return;
-              }
-            } catch {
-              zxing.reset();
-            }
           }
         }
       }
@@ -313,38 +284,35 @@ export function CameraCapture({
     };
   }, [mode, handleScanSuccess]);
 
-  // Capture frame function with corner support
-  const captureWithCorners = useCallback((overrideCorners?: QuadCorners) => {
+  // Capture full uncropped video frame
+  const captureFrame = useCallback(() => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+
+      if (vw <= 0 || vh <= 0) return;
+
+      canvas.width = vw;
+      canvas.height = vh;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-
-        const cornersToUse =
-          overrideCorners ||
-          detectedCorners ||
-          getDefaultCorners(canvas.width, canvas.height, 0.18);
-
-        setCapturedImage(dataUrl);
-        setDetectedCorners(cornersToUse);
-        setShowCropAdjuster(true);
+        ctx.drawImage(video, 0, 0, vw, vh);
+        const fullDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        setCapturedImage(fullDataUrl);
       }
     }
-  }, [detectedCorners]);
+  }, []);
 
-  // Live Real-Time Corner Detection & 1-Second Auto-Capture Loop
+  // Motion Stability Detection Loop for Photo Mode
   useEffect(() => {
-    if (mode !== 'photo' || capturedImage || showCropAdjuster) return;
+    if (mode !== 'photo' || capturedImage) return;
 
     let isMounted = true;
     let timeoutId: any = null;
 
-    const processPhotoCorners = () => {
+    const processMotionDetection = () => {
       if (!isMounted) return;
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -354,75 +322,78 @@ export function CameraCapture({
         const vh = video.videoHeight;
 
         if (canvas) {
-          const procW = 360;
-          const procH = Math.round((procW / vw) * vh);
-          canvas.width = procW;
-          canvas.height = procH;
+          const sampleW = 120;
+          const sampleH = 160;
+          canvas.width = sampleW;
+          canvas.height = sampleH;
           const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
           if (ctx) {
-            ctx.drawImage(video, 0, 0, vw, vh, 0, 0, procW, procH);
-            const detected = detectBookCorners(ctx, procW, procH);
+            const cropX = Math.round(vw * 0.15);
+            const cropY = Math.round(vh * 0.20);
+            const cropW = Math.round(vw * 0.70);
+            const cropH = Math.round(vh * 0.60);
+
+            ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, sampleW, sampleH);
+            const imageData = ctx.getImageData(0, 0, sampleW, sampleH);
+            const currPixels = imageData.data;
 
             const now = Date.now();
             const dt = Math.min(200, now - lastFrameTimeRef.current);
             lastFrameTimeRef.current = now;
 
-            if (detected) {
-              const scaleX = vw / procW;
-              const scaleY = vh / procH;
-              const fullCorners: QuadCorners = {
-                tl: { x: detected.corners.tl.x * scaleX, y: detected.corners.tl.y * scaleY },
-                tr: { x: detected.corners.tr.x * scaleX, y: detected.corners.tr.y * scaleY },
-                br: { x: detected.corners.br.x * scaleX, y: detected.corners.br.y * scaleY },
-                bl: { x: detected.corners.bl.x * scaleX, y: detected.corners.bl.y * scaleY },
-              };
+            if (prevFramePixelsRef.current && prevFramePixelsRef.current.length === currPixels.length) {
+              const prevPixels = prevFramePixelsRef.current;
+              let totalDiff = 0;
+              const sampleCount = (sampleW * sampleH) / 4;
 
-              setDetectedCorners(fullCorners);
+              for (let i = 0; i < currPixels.length; i += 16) {
+                totalDiff += Math.abs(currPixels[i] - prevPixels[i]);
+                totalDiff += Math.abs(currPixels[i + 1] - prevPixels[i + 1]);
+                totalDiff += Math.abs(currPixels[i + 2] - prevPixels[i + 2]);
+              }
 
-              if (isCornersStable(prevCornersRef.current, fullCorners, vw, vh)) {
+              const avgDiff = totalDiff / sampleCount;
+
+              // Camera is held steady over book if avg motion < 32.0
+              if (avgDiff < 32.0 && autoCaptureEnabled) {
                 steadyTimeRef.current += dt;
                 const progress = Math.min(1.0, steadyTimeRef.current / 1000);
                 setStableProgress(progress);
 
-                if (steadyTimeRef.current >= 1000 && autoCaptureEnabled) {
+                if (steadyTimeRef.current >= 1000) {
                   try {
                     navigator.vibrate?.([50, 30, 50]);
                   } catch {}
-                  toast.success(t('auto_captured', { defaultValue: 'Book detected! Auto-captured' }));
-                  captureWithCorners(fullCorners);
+                  toast.success(t('auto_captured', { defaultValue: 'Hold still! Photo snapped' }));
+                  captureFrame();
                   return;
                 }
               } else {
-                steadyTimeRef.current = 0;
-                setStableProgress(0);
+                steadyTimeRef.current = Math.max(0, steadyTimeRef.current - dt * 1.5);
+                setStableProgress(Math.min(1.0, steadyTimeRef.current / 1000));
               }
-
-              prevCornersRef.current = fullCorners;
-            } else {
-              setDetectedCorners(null);
-              prevCornersRef.current = null;
-              steadyTimeRef.current = 0;
-              setStableProgress(0);
             }
+
+            prevFramePixelsRef.current = currPixels;
           }
         }
       }
 
       if (isMounted) {
-        timeoutId = setTimeout(processPhotoCorners, 100);
+        timeoutId = setTimeout(processMotionDetection, 100);
       }
     };
 
-    processPhotoCorners();
+    processMotionDetection();
 
     return () => {
       isMounted = false;
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [mode, capturedImage, showCropAdjuster, autoCaptureEnabled, captureWithCorners, t]);
+  }, [mode, capturedImage, autoCaptureEnabled, captureFrame, t]);
 
-  const handleCroppedConfirm = (croppedDataUrl: string) => {
+  const handleConfirmCropped = (croppedDataUrl: string) => {
     if (onCapture) {
       onCapture(croppedDataUrl);
     }
@@ -432,38 +403,25 @@ export function CameraCapture({
 
   const handleRetakePhoto = useCallback(() => {
     setCapturedImage(null);
-    setShowCropAdjuster(false);
     setStableProgress(0);
     steadyTimeRef.current = 0;
-    prevCornersRef.current = null;
+    lastFrameTimeRef.current = Date.now();
+    prevFramePixelsRef.current = null;
 
-    // Re-initialize camera stream on retake so video element never gets paused
     if (videoRef.current && streamRef.current) {
       videoRef.current.srcObject = streamRef.current;
-      videoRef.current.play().catch(() => {
-        startCamera();
-      });
+      videoRef.current.play().catch(() => startCamera());
     } else {
       startCamera();
     }
   }, [startCamera]);
-
-  // Convert full video coordinates to percentage for overlay rendering
-  const getDisplayPoint = (p: { x: number; y: number }) => {
-    const video = videoRef.current;
-    if (!video || !video.videoWidth || !video.videoHeight) return { x: 0, y: 0 };
-    return {
-      x: (p.x / video.videoWidth) * 100,
-      y: (p.y / video.videoHeight) * 100,
-    };
-  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-[60] flex flex-col"
+      className="fixed inset-0 bg-black z-[60] flex flex-col justify-between"
     >
       <div className="relative flex-1 flex items-center justify-center overflow-hidden bg-black">
         {error ? (
@@ -473,9 +431,16 @@ export function CameraCapture({
               {t('close')}
             </Button>
           </div>
+        ) : capturedImage ? (
+          /* Flexible Rectangular Crop Adjuster */
+          <CropAdjuster
+            imageSrc={capturedImage}
+            onConfirm={handleConfirmCropped}
+            onRetake={handleRetakePhoto}
+          />
         ) : (
+          /* Live Camera Stream with Framing Guide Reticle */
           <>
-            {/* Live Video Stream ALWAYS kept in DOM */}
             <video
               ref={videoRef}
               autoPlay
@@ -484,65 +449,68 @@ export function CameraCapture({
               onLoadedMetadata={() => {
                 videoRef.current?.play().catch(() => {});
               }}
-              className={cn(
-                'w-full h-full object-cover',
-                showCropAdjuster ? 'hidden' : 'block'
-              )}
+              className="w-full h-full object-cover"
             />
 
-            {/* Detected Corners & Stability Countdown Overlay */}
-            {mode === 'photo' && detectedCorners && !showCropAdjuster && (
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-                <polygon
-                  points={`${getDisplayPoint(detectedCorners.tl).x}%,${getDisplayPoint(detectedCorners.tl).y}% ${getDisplayPoint(detectedCorners.tr).x}%,${getDisplayPoint(detectedCorners.tr).y}% ${getDisplayPoint(detectedCorners.br).x}%,${getDisplayPoint(detectedCorners.br).y}% ${getDisplayPoint(detectedCorners.bl).x}%,${getDisplayPoint(detectedCorners.bl).y}%`}
-                  fill={stableProgress > 0.5 ? 'rgba(34, 197, 94, 0.2)' : 'rgba(59, 130, 246, 0.15)'}
-                  stroke={stableProgress > 0.5 ? '#22c55e' : '#3b82f6'}
-                  strokeWidth="3"
-                />
-              </svg>
-            )}
+            {/* Book Framing Guide Box */}
+            {mode === 'photo' && (
+              <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center z-10 pt-8">
+                <div
+                  className={cn(
+                    'relative w-[65vw] max-w-xs max-h-[46vh] aspect-[1/1.414] mt-6 rounded-2xl border-2 border-dashed transition-all duration-300 flex items-center justify-center overflow-hidden bg-black/10 backdrop-blur-[1px]',
+                    stableProgress > 0.5 ? 'border-emerald-400 bg-emerald-500/20' : 'border-white/80'
+                  )}
+                >
+                  <div className={cn('absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 rounded-tl-lg transition-colors', stableProgress > 0.5 ? 'border-emerald-400' : 'border-primary')} />
+                  <div className={cn('absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 rounded-tr-lg transition-colors', stableProgress > 0.5 ? 'border-emerald-400' : 'border-primary')} />
+                  <div className={cn('absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 rounded-bl-lg transition-colors', stableProgress > 0.5 ? 'border-emerald-400' : 'border-primary')} />
+                  <div className={cn('absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 rounded-br-lg transition-colors', stableProgress > 0.5 ? 'border-emerald-400' : 'border-primary')} />
 
-            {/* 1-Second Countdown Visual Ring */}
-            {mode === 'photo' && stableProgress > 0 && !showCropAdjuster && (
-              <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center z-15">
-                <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-black/60 backdrop-blur-md border border-white/20">
-                  <svg className="w-20 h-20 -rotate-90">
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="34"
-                      stroke="rgba(255,255,255,0.2)"
-                      strokeWidth="5"
-                      fill="none"
-                    />
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="34"
-                      stroke="#22c55e"
-                      strokeWidth="5"
-                      fill="none"
-                      strokeDasharray="213.6"
-                      strokeDashoffset={213.6 * (1 - stableProgress)}
-                      className="transition-all duration-75"
-                    />
-                  </svg>
-                  <span className="absolute text-white font-bold text-xs">
-                    {Math.ceil((1 - stableProgress) * 100) / 100}s
-                  </span>
+                  {/* 1-Second Motion Stability Ring */}
+                  {stableProgress > 0 && (
+                    <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-black/60 backdrop-blur-md border border-white/20">
+                      <svg className="w-16 h-16 -rotate-90">
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="26"
+                          stroke="rgba(255,255,255,0.2)"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="26"
+                          stroke="#22c55e"
+                          strokeWidth="4"
+                          fill="none"
+                          strokeDasharray="163.3"
+                          strokeDashoffset={163.3 * (1 - stableProgress)}
+                          className="transition-all duration-75"
+                        />
+                      </svg>
+                      <span className="absolute text-white font-bold text-xs">
+                        {Math.ceil((1 - stableProgress) * 100) / 100}s
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <p className="mt-3 text-emerald-400 font-semibold text-xs bg-black/70 px-3 py-1 rounded-full backdrop-blur-xs">
-                  {t('hold_steady', { defaultValue: 'Hold steady to capture...' })}
+
+                <p className="mt-5 text-white/90 text-xs font-medium px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-xs tracking-wide">
+                  {stableProgress > 0
+                    ? t('hold_steady', { defaultValue: 'Hold still to snap...' })
+                    : t('align_book_hint', { defaultValue: 'Center book cover inside frame' })}
                 </p>
               </div>
             )}
 
-            {/* Scan Reticle Overlay for Barcode Scan Mode */}
-            {mode === 'scan' && !showCropAdjuster && (
+            {/* Scan Reticle for Barcode Mode */}
+            {mode === 'scan' && (
               <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center z-10">
                 <div
                   className={cn(
-                    'relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl border-2 transition-all duration-300 flex items-center justify-center overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.55)]',
+                    'relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl border-2 transition-all duration-300 flex items-center justify-center overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.65)]',
                     detectedCode ? 'border-emerald-400 bg-emerald-500/20 scale-105' : 'border-white/80'
                   )}
                 >
@@ -560,128 +528,113 @@ export function CameraCapture({
                 </div>
 
                 <p className="mt-5 text-white/90 text-xs font-medium px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-xs tracking-wide">
-                  {detectedCode ? `Scanned: ${detectedCode}` : t('scan_hint', { defaultValue: 'Align barcode within the frame' })}
+                  {detectedCode ? `Scanned: ${detectedCode}` : t('scan_hint', { defaultValue: 'Align barcode inside frame' })}
                 </p>
               </div>
             )}
           </>
         )}
 
-        {/* Offscreen canvases for image processing */}
+        {/* Offscreen canvases */}
         <canvas ref={canvasRef} className="hidden" />
         <canvas ref={rotCanvasRef} className="hidden" />
 
-        {/* Top Controls: Mode Switcher */}
-        {allowModeSwitch && !showCropAdjuster && (
-          <div className="absolute top-4 left-4 flex gap-2 z-20 pt-[env(safe-area-inset-top)]">
-            <Button
-              variant={mode === 'photo' ? 'default' : 'secondary'}
-              size="sm"
-              className="rounded-full shadow-md"
-              onClick={() => {
-                setMode('photo');
-                setCapturedImage(null);
-              }}
-            >
-              <Camera className="w-4 h-4 mr-2" />
-              {t('photo')}
-            </Button>
-            <Button
-              variant={mode === 'scan' ? 'default' : 'secondary'}
-              size="sm"
-              className="rounded-full shadow-md"
-              onClick={() => {
-                setMode('scan');
-                setCapturedImage(null);
-              }}
-            >
-              <ScanLine className="w-4 h-4 mr-2" />
-              {t('scan')}
-            </Button>
-          </div>
-        )}
+        {/* Top Controls Header Bar */}
+        {!capturedImage && (
+          <div className="absolute top-0 left-0 right-0 p-4 pt-[calc(env(safe-area-inset-top)+0.5rem)] flex items-center justify-between z-40 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
+            {allowModeSwitch ? (
+              <div className="flex gap-2">
+                <Button
+                  variant={mode === 'photo' ? 'default' : 'secondary'}
+                  size="sm"
+                  className="rounded-full shadow-md text-xs h-8"
+                  onClick={() => setMode('photo')}
+                >
+                  <Camera className="w-3.5 h-3.5 mr-1.5" />
+                  {t('photo')}
+                </Button>
+                <Button
+                  variant={mode === 'scan' ? 'default' : 'secondary'}
+                  size="sm"
+                  className="rounded-full shadow-md text-xs h-8"
+                  onClick={() => setMode('scan')}
+                >
+                  <ScanLine className="w-3.5 h-3.5 mr-1.5" />
+                  {t('scan')}
+                </Button>
+              </div>
+            ) : <div />}
 
-        {/* Top Right Controls: Auto-Capture Toggle, Torch & Close */}
-        {!showCropAdjuster && (
-          <div className="absolute top-4 right-4 flex items-center gap-2 z-20 pt-[env(safe-area-inset-top)]">
-            {mode === 'photo' && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className={cn(
-                  'rounded-full shadow-md text-xs h-8 px-2.5 gap-1 transition-colors',
-                  autoCaptureEnabled ? 'bg-amber-400 text-black font-semibold' : 'bg-white/20 text-white'
-                )}
-                onClick={() => setAutoCaptureEnabled(!autoCaptureEnabled)}
-                title="Toggle Auto-Capture"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{autoCaptureEnabled ? 'Auto 1s' : 'Manual'}</span>
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {mode === 'photo' && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className={cn(
+                    'rounded-full shadow-md text-xs h-8 px-2.5 gap-1 transition-colors',
+                    autoCaptureEnabled ? 'bg-amber-400 text-black font-semibold' : 'bg-white/20 text-white'
+                  )}
+                  onClick={() => setAutoCaptureEnabled(!autoCaptureEnabled)}
+                  title="Toggle Motion Auto-Snap"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{autoCaptureEnabled ? 'Auto 1s' : 'Manual'}</span>
+                </Button>
+              )}
 
-            {hasTorch && (
+              {hasTorch && (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className={cn(
+                    'rounded-full shadow-md transition-colors w-8 h-8',
+                    torchOn ? 'bg-amber-400 text-black hover:bg-amber-300' : 'bg-white/20 text-white hover:bg-white/30'
+                  )}
+                  onClick={toggleTorch}
+                  title="Flashlight"
+                >
+                  {torchOn ? <Zap className="w-4 h-4 fill-current" /> : <ZapOff className="w-4 h-4" />}
+                </Button>
+              )}
+
               <Button
-                variant="secondary"
+                variant="ghost"
                 size="icon"
-                className={cn(
-                  'rounded-full shadow-md transition-colors w-8 h-8',
-                  torchOn ? 'bg-amber-400 text-black hover:bg-amber-300' : 'bg-white/20 text-white hover:bg-white/30'
-                )}
-                onClick={toggleTorch}
-                title="Flashlight"
+                className="text-white hover:bg-white/20 rounded-full shadow-md w-8 h-8"
+                onClick={() => {
+                  stopCamera();
+                  onClose();
+                }}
               >
-                {torchOn ? <Zap className="w-4 h-4 fill-current" /> : <ZapOff className="w-4 h-4" />}
+                <X className="w-5 h-5" />
               </Button>
-            )}
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20 rounded-full shadow-md w-8 h-8"
-              onClick={() => {
-                stopCamera();
-                onClose();
-              }}
-            >
-              <X className="w-5 h-5" />
-            </Button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* CropAdjuster Overlay */}
-      {showCropAdjuster && capturedImage && (
-        <CropAdjuster
-          imageSrc={capturedImage}
-          initialCorners={detectedCorners}
-          onConfirm={handleCroppedConfirm}
-          onRetake={handleRetakePhoto}
-        />
-      )}
-
-      {/* Bottom Shutter Controls for Photo Mode */}
-      {!showCropAdjuster && (
-        <div className="bg-black/95 p-6 pb-8 flex flex-col items-center justify-center gap-2 z-20">
+      {/* Bottom Shutter Controls */}
+      {!capturedImage && (
+        <div className="bg-black/95 p-6 pb-8 flex flex-col items-center justify-center gap-2 z-20 border-t border-white/10">
           {mode === 'photo' && (
             <>
               <Button
                 size="lg"
                 className="w-18 h-18 rounded-full bg-white text-black hover:bg-zinc-200 shadow-lg active:scale-95 transition-transform"
-                onClick={() => captureWithCorners()}
+                onClick={() => captureFrame()}
               >
                 <Camera className="w-8 h-8" />
               </Button>
-              <p className="text-[11px] text-white/60">
+              <p className="text-[11px] text-white/60 mt-1">
                 {autoCaptureEnabled
-                  ? t('auto_capture_hint', { defaultValue: 'Auto-captures when book corners are stable for 1s' })
-                  : t('manual_capture_hint', { defaultValue: 'Tap shutter to take photo and crop' })}
+                  ? t('auto_snap_hint', { defaultValue: 'Hold still for 1s inside frame to auto-snap' })
+                  : t('manual_snap_hint', { defaultValue: 'Tap shutter to take photo' })}
               </p>
             </>
           )}
 
           {mode === 'scan' && (
-            <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+            <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium py-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -689,7 +642,7 @@ export function CameraCapture({
               <span>
                 {detectedCode
                   ? `Detected ${detectedCode}`
-                  : t('scan_hint', { defaultValue: 'Align barcode or QR code inside the frame' })}
+                  : t('scan_hint', { defaultValue: 'Align barcode inside frame' })}
               </span>
             </div>
           )}
