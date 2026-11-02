@@ -1,0 +1,2623 @@
+[
+  {
+    "title": "ぼくのおにいちゃん 2004 Summer",
+    "author": "Boku Oni",
+    "barcode": "191959633419696",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791361794933
+  },
+  {
+    "title": "ぼくのおにいちゃん 2004 Autumn",
+    "author": "Boku Oni",
+    "barcode": "191959633419696",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791361908485
+  },
+  {
+    "title": "Shounen Hisho Report",
+    "author": "Sakakitsui",
+    "barcode": "",
+    "circle": "88scones",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791362058541
+  },
+  {
+    "title": "Kiss Me",
+    "author": "Kanata",
+    "barcode": "",
+    "circle": "@-Attomaku-",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791362264124
+  },
+  {
+    "title": "Love Me",
+    "author": "Kanata",
+    "barcode": "",
+    "circle": "@-Attomaku-",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791362320001
+  },
+  {
+    "title": "With Me",
+    "author": "Kanata",
+    "barcode": "",
+    "circle": "@-Attomaku-",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791362375000
+  },
+  {
+    "title": "Smile Again",
+    "author": "Shinyama Haruto / rito",
+    "barcode": "",
+    "circle": "",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791362549203
+  },
+  {
+    "title": "指切る間に  誓言を",
+    "author": "Nimoyu",
+    "barcode": "",
+    "circle": "Nimoya",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791362752716
+  },
+  {
+    "title": "僕が君の手を握り返したのは",
+    "author": "Amano Jyaku",
+    "barcode": "",
+    "circle": "",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791362911308
+  },
+  {
+    "title": "Happy Birthday Gon 2020 0505",
+    "author": "Wao / mo1",
+    "barcode": "",
+    "circle": "",
+    "parody": "Hunter x Hunter",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791362991393
+  },
+  {
+    "title": "大きな土偶の下で",
+    "author": "",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791450002524
+  },
+  {
+    "title": "明日春が来たら",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Inazuma Eleven",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450151759
+  },
+  {
+    "title": "漂流男子",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Drifting Home",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450486208
+  },
+  {
+    "title": "Panty & Loose Socks",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450547224
+  },
+  {
+    "title": "Don't Touch Me",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450586889
+  },
+  {
+    "title": "Googles Boys",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450631118
+  },
+  {
+    "title": "Losers",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450701392
+  },
+  {
+    "title": "Loose Loose",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791450818068
+  },
+  {
+    "title": "先輩の命令は？絶対です！",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791450924451
+  },
+  {
+    "title": "Gotcha!",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791451219146
+  },
+  {
+    "title": "Re: Re:",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791451350955
+  },
+  {
+    "title": "TT",
+    "author": "SZKN",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791451441679
+  },
+  {
+    "title": "空白地帯の功労者",
+    "author": "Nimoyu",
+    "barcode": "",
+    "circle": "Nimoya",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791451681372
+  },
+  {
+    "title": "しょう純!!",
+    "author": "syntax error",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791451925710
+  },
+  {
+    "title": "ワタディノホンネ。",
+    "translatedTitle": "My Real Intention",
+    "author": "獣人といる",
+    "barcode": "",
+    "circle": "といるのいろ",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791452119180
+  },
+  {
+    "title": "VV Buibui Fork-mon x V-mom",
+    "author": "Kensan",
+    "barcode": "",
+    "circle": "花より獣",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791453660792
+  },
+  {
+    "title": "おいらにまかせて！",
+    "author": "獣人といる",
+    "barcode": "",
+    "circle": "といるのいろ",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791453739447
+  },
+  {
+    "title": "レモンハイボール",
+    "author": "Nekoyasu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791453857951
+  },
+  {
+    "title": "Don't Stop ぼくらのシーソーゲーム",
+    "author": "Nekoyasu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791454154982
+  },
+  {
+    "title": "HR",
+    "author": "あつこ",
+    "barcode": "",
+    "circle": "あつあつCOOK",
+    "parody": "Free!",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791454321204
+  },
+  {
+    "title": "もうちょっとだけゆっくりでおねがいします",
+    "author": "とむぽん",
+    "barcode": "",
+    "circle": "",
+    "parody": "Vocaloid",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791454444787
+  },
+  {
+    "title": "Mission \"Y\" Archive",
+    "author": "Ad-Hoc",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791454562521
+  },
+  {
+    "title": "Caught And Fallen",
+    "author": "ちりかご",
+    "barcode": "",
+    "circle": "",
+    "parody": "Megaman",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791454778820
+  },
+  {
+    "title": "キミ色ココロウィンドウ",
+    "author": "ともひろ",
+    "barcode": "",
+    "circle": "母屋",
+    "parody": "Megaman",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791454944107
+  },
+  {
+    "title": "ご奉仕致します",
+    "author": "ちりかご",
+    "barcode": "",
+    "circle": "",
+    "parody": "Megaman",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791455036595
+  },
+  {
+    "title": "僕のマスターを紹介します",
+    "translatedTitle": "It Introduces My Little Master",
+    "author": "",
+    "barcode": "",
+    "circle": "ヨネダ",
+    "parody": "Vocaloid",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791455226927
+  },
+  {
+    "title": "キミノネイロ",
+    "author": "華村色花",
+    "barcode": "",
+    "circle": "",
+    "parody": "Vocaloid",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791455947744
+  },
+  {
+    "title": "そのときがくるまでは",
+    "author": "おでゅっ！",
+    "barcode": "",
+    "circle": "まんにゃ",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791533953256
+  },
+  {
+    "title": "ブルマはお好きですか",
+    "author": "",
+    "barcode": "",
+    "circle": "aricever. / D-candy",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534110424
+  },
+  {
+    "title": "かぞくごっこ ちいろく",
+    "author": "二キロ",
+    "barcode": "",
+    "circle": "京",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534247926
+  },
+  {
+    "title": "鹿を追う者は山を見ず",
+    "author": "鈴子 / 御簾 菫",
+    "barcode": "",
+    "circle": "esperer / nicca",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534419860
+  },
+  {
+    "title": "たのしい夜這い",
+    "author": "おでゅっ！",
+    "barcode": "",
+    "circle": "まんにゃ",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534567695
+  },
+  {
+    "title": "おっちゃんのばか",
+    "author": "おでゅっ！",
+    "barcode": "",
+    "circle": "まんにゃ",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534644126
+  },
+  {
+    "title": "Odu Log",
+    "author": "おでゅっ！",
+    "barcode": "",
+    "circle": "まんにゃ",
+    "parody": "Naruto",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791534730629
+  },
+  {
+    "title": "フアッキングパパ デザート編",
+    "author": "Mitsui Jun",
+    "barcode": "",
+    "circle": "千年帝国",
+    "parody": "Cooking Papa",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791534980597
+  },
+  {
+    "title": "ナット尽くしのキュイ添え",
+    "author": "Mitsui Jun",
+    "barcode": "",
+    "circle": "千年帝国",
+    "parody": "Made In Abyss",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791535057259
+  },
+  {
+    "title": "No Dish",
+    "author": "雨更",
+    "barcode": "",
+    "circle": "ユルヒダリ",
+    "parody": "Sarazanmai",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791535857844
+  },
+  {
+    "title": "シークレット",
+    "author": "イチカ",
+    "barcode": "",
+    "circle": "犬小屋",
+    "parody": "Shinkalion",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536013387
+  },
+  {
+    "title": "ちんぽこ",
+    "author": "中雪",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536137524
+  },
+  {
+    "title": "Happening Summer Vacation",
+    "author": "SPNN",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536296945
+  },
+  {
+    "title": "Happening Day",
+    "author": "SPNN",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536359420
+  },
+  {
+    "title": "一進一退",
+    "author": "Drum-Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536541407
+  },
+  {
+    "title": "意気衝天",
+    "author": "Drum-Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536603105
+  },
+  {
+    "title": "閑話休題0.8",
+    "author": "Drum-Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536677052
+  },
+  {
+    "title": "閑話休題改",
+    "author": "Drum-Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536742841
+  },
+  {
+    "title": "凸凹MIX盛り",
+    "author": "",
+    "barcode": "",
+    "circle": "#NUM!",
+    "parody": "Magi",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791536869248
+  },
+  {
+    "title": "HEBIDAI Extra Vol. 2",
+    "author": "Daikung",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536911909
+  },
+  {
+    "title": "Homerun!",
+    "author": "Mikkoukun",
+    "barcode": "",
+    "circle": "",
+    "parody": "Bacchikoi",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791536950388
+  },
+  {
+    "title": "温度差事情",
+    "author": "はちょ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Ensemble Stars",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537057743
+  },
+  {
+    "title": "おとこのこのおと",
+    "author": "JaiL Black",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537160512
+  },
+  {
+    "title": "やみつき！",
+    "author": "ららばい",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537252232
+  },
+  {
+    "title": "スイッチ!2",
+    "author": "日向快晴",
+    "barcode": "",
+    "circle": "ハコニワ",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537365802
+  },
+  {
+    "title": "スイッチ!1",
+    "author": "日向快晴",
+    "barcode": "",
+    "circle": "ハコニワ",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537416426
+  },
+  {
+    "title": "ししゆんき",
+    "author": "ポロン",
+    "barcode": "",
+    "circle": "こねこ組",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791537514854
+  },
+  {
+    "title": "魁少年嗜好",
+    "author": "濱田通",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791537794175
+  },
+  {
+    "title": "人生 Reprint Vol. 1",
+    "author": "しきむら",
+    "barcode": "",
+    "circle": "OS特区",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791537946756
+  },
+  {
+    "title": "カガヤキコマチ",
+    "author": "いがもの",
+    "barcode": "",
+    "circle": "",
+    "parody": "Shinkalion",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791538046918
+  },
+  {
+    "title": "フルーツ牛乳 Vol. 7",
+    "author": "紺田翔太",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791538341420
+  },
+  {
+    "title": "オトコのコ活動報告書",
+    "author": "Takase You",
+    "barcode": "",
+    "circle": "鷹勢優",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791538572927
+  },
+  {
+    "title": "少年達の秘めた夜",
+    "author": "多田在良",
+    "barcode": "9784870766051",
+    "circle": "Izumi Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791882837390
+  },
+  {
+    "title": "ヒミツの少年痴嘘",
+    "author": "多田在良",
+    "barcode": "9784870765863",
+    "circle": "Izumi Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791882950883
+  },
+  {
+    "title": "イケナイ少年遊戯",
+    "author": "多田在良",
+    "barcode": "9784870765771",
+    "circle": "Izumi Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791883129462
+  },
+  {
+    "title": "少年嗜好4",
+    "author": "名取裕樹",
+    "barcode": "9784861051296",
+    "circle": "夢雅COMICS",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791883387665
+  },
+  {
+    "title": "ホワイトドロップ",
+    "translatedTitle": "White Drop",
+    "author": "みかみ北都",
+    "barcode": "9784903028323",
+    "circle": "ももまんじるし",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791883622751
+  },
+  {
+    "title": "ヒミツの少年団",
+    "author": "Takase You",
+    "barcode": "9784863496842",
+    "circle": "Tenma Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791883765816
+  },
+  {
+    "title": "先生とボク",
+    "author": "Karuma Tatsurou",
+    "barcode": "9784790110965",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791883953738
+  },
+  {
+    "title": "ABO式",
+    "author": "とらきち",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791884150528
+  },
+  {
+    "title": "起床無理イラスト本 Vol.1",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791884285615
+  },
+  {
+    "title": "星の降る音",
+    "author": "Hoshiai Hilo",
+    "barcode": "9784790110347",
+    "circle": "Diamond Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791884504993
+  },
+  {
+    "title": "君を連れて行く船",
+    "author": "Hoshiai Hilo",
+    "barcode": "9784790111795",
+    "circle": "Diamond Comics",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791884606625
+  },
+  {
+    "title": "薬味忍法帖",
+    "author": "其ノ壱",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791884731784
+  },
+  {
+    "title": "ぼくらなかよでぃ3兄弟!",
+    "author": "Chibineko Master",
+    "barcode": "",
+    "circle": "Chibineko Honpo",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791884836480
+  },
+  {
+    "title": "インクパス!1!2!3!",
+    "author": "吉良サムハイ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1791884959592
+  },
+  {
+    "title": "春猫",
+    "translatedTitle": "Haruneko",
+    "author": "Chibineko Master",
+    "barcode": "",
+    "circle": "Chibineko Honpo",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885374818
+  },
+  {
+    "title": "春猫弐",
+    "translatedTitle": "Haruneko 2",
+    "author": "Chibineko Master",
+    "barcode": "",
+    "circle": "Chibineko Honpo",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885482681
+  },
+  {
+    "title": "春猫参",
+    "translatedTitle": "Haruneko 3",
+    "author": "Chibineko Master",
+    "barcode": "",
+    "circle": "Chibineko Honpo",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885626015
+  },
+  {
+    "title": "めっこられっこ",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885802439
+  },
+  {
+    "title": "めっこられっこ2",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885866900
+  },
+  {
+    "title": "めっこられっこ3",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885907274
+  },
+  {
+    "title": "めっこられっこ4",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885947271
+  },
+  {
+    "title": "めっこられっこ5",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791885991027
+  },
+  {
+    "title": "めっこられっこ6",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791886031534
+  },
+  {
+    "title": "めっこられっこ7",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791886065710
+  },
+  {
+    "title": "めっこられっこ8",
+    "author": "次郎",
+    "barcode": "",
+    "circle": "ごろうじろう",
+    "parody": "Kemono",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1791886099437
+  },
+  {
+    "title": "BLかるた",
+    "author": "",
+    "barcode": "",
+    "circle": "",
+    "parody": "Card Game",
+    "size": "Other",
+    "isAnthology": false,
+    "addedAt": 1791886436259
+  },
+  {
+    "title": "こんなお仕事聞いてない",
+    "author": "Osouzai",
+    "barcode": "0020230506000",
+    "circle": "",
+    "parody": "",
+    "size": "Other",
+    "isAnthology": false,
+    "addedAt": 1792049950616
+  },
+  {
+    "title": "創作少年アンソロジーSH",
+    "author": "",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792050149076
+  },
+  {
+    "title": "その熱い触れる",
+    "author": "ケイテイ",
+    "barcode": "",
+    "circle": "曹達水シャンプー",
+    "parody": "Digimon",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1792050374141
+  },
+  {
+    "title": "メルテイー",
+    "author": "ポリロンQ",
+    "barcode": "",
+    "circle": "",
+    "parody": "World Trigger",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1792050507692
+  },
+  {
+    "title": "閑話休題",
+    "author": "Drum-Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792050671951
+  },
+  {
+    "title": "ぼくのおにいちゃん 2024 Spring",
+    "author": "Boku Oni",
+    "barcode": "191959633419696",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792050836980
+  },
+  {
+    "title": "ぼくのおにいちゃん 2025 Spring",
+    "author": "Boku Oni",
+    "barcode": "191959633419696",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792054174162
+  },
+  {
+    "title": "ぼくのおにいちゃん 2005 Winter",
+    "author": "Boku Oni",
+    "barcode": "191959633419696",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792054252344
+  },
+  {
+    "title": "百様箱其の弐",
+    "author": "かわだ章吾",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792054667504
+  },
+  {
+    "title": "おとこのこ x おとこのこ",
+    "translatedTitle": "BOY X BOY",
+    "author": "井ノ本リカ子",
+    "barcode": "9784790121466",
+    "circle": "",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": true,
+    "addedAt": 1792054773579
+  },
+  {
+    "title": "八雲先輩と雄介くん",
+    "translatedTitle": "Yakumo Senpai And Yuusuke Kun",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1792055023801
+  },
+  {
+    "title": "陰キャくんと不良くん",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "A5",
+    "isAnthology": false,
+    "addedAt": 1792055472055
+  },
+  {
+    "title": "どしがたスケッチ",
+    "author": "Red−Uguisu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792395186813
+  },
+  {
+    "title": "らぶりふ！",
+    "author": "ねこんだ",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792395387758
+  },
+  {
+    "title": "ロイド様攻め中心第七王子らくがき本",
+    "author": "",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792395554072
+  },
+  {
+    "title": "Boys Brand Nudist New World",
+    "author": "Pikachurin",
+    "barcode": "",
+    "circle": "Preteenparty",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792395672069
+  },
+  {
+    "title": "逃若党艶姿譚",
+    "translatedTitle": "Naughty Story Of Chojatoh Clan",
+    "author": "Takase You",
+    "barcode": "",
+    "circle": "Studio Rakkyou",
+    "parody": "The Elusive Samurai",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792395858426
+  },
+  {
+    "title": "エロ楽しく学ふ男の子の保険体育",
+    "translatedTitle": "Erotic Sex Education For Boys",
+    "author": "Pikachurin",
+    "barcode": "",
+    "circle": "Preteenparty",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792396022961
+  },
+  {
+    "title": "ガキばん!! Vol 2",
+    "author": "あおた",
+    "barcode": "",
+    "circle": "Komugi Field",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792396123194
+  },
+  {
+    "title": "塾っ子! イタタタ!編 アツアツ?!温泉編",
+    "author": "空川",
+    "barcode": "",
+    "circle": "ドリル塊",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792396390420
+  },
+  {
+    "title": "後輩くんとポチャ先輩",
+    "author": "Kodama Momotaro",
+    "barcode": "",
+    "circle": "桃色パステル",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792396516919
+  },
+  {
+    "title": "後輩くんとポチャ先輩Collection",
+    "author": "Kodama Momotaro",
+    "barcode": "",
+    "circle": "桃色パステル",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792396611218
+  },
+  {
+    "title": "ハ雄パラレル",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792396915505
+  },
+  {
+    "title": "お願いまっち、挿れさして!!",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792397148269
+  },
+  {
+    "title": "ひじたま!",
+    "author": "Rua/Isako",
+    "barcode": "",
+    "circle": "ひざばんど/なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792397304064
+  },
+  {
+    "title": "にいちゃんとタッチ!!",
+    "author": "もうふ",
+    "barcode": "",
+    "circle": "MOW",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792574354777
+  },
+  {
+    "title": "越後の不犯と俺の犯",
+    "author": "TAMA",
+    "barcode": "",
+    "circle": "武TA",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792574517406
+  },
+  {
+    "title": "Sketch Payapaya",
+    "author": "",
+    "barcode": "006629 00410901016510",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792574855543
+  },
+  {
+    "title": "せんせいであそぼう3時間目",
+    "author": "しまきよ",
+    "barcode": "",
+    "circle": "パンダ4号",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792574968682
+  },
+  {
+    "title": "せんせいであそぼう1.2時間目",
+    "author": "しまきよ",
+    "barcode": "",
+    "circle": "パンダ4号",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792575090349
+  },
+  {
+    "title": "おねがい! 新川くん",
+    "author": "Shigemaru Shigeru",
+    "barcode": "",
+    "circle": "Shonen Zoom",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792575185070
+  },
+  {
+    "title": "成年ジャンプ",
+    "author": "FAUST5/4",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792575378837
+  },
+  {
+    "title": "少年ズーム 2015 EXTRA",
+    "author": "Shigemaru Shigeru",
+    "barcode": "",
+    "circle": "Shonen Zoom",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792575908150
+  },
+  {
+    "title": "ぼくの恋人はちいさい",
+    "author": "Sサイズ",
+    "barcode": "",
+    "circle": "しなちく",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792576028758
+  },
+  {
+    "title": "マルルクちゃんのアビスの底",
+    "author": "Red−Uguisu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576176149
+  },
+  {
+    "title": "壁尻レグ",
+    "author": "Red−Uguisu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576279121
+  },
+  {
+    "title": "セックスドライブオーバード",
+    "author": "Red−Uguisu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576366934
+  },
+  {
+    "title": "レグにゅるチャージ",
+    "author": "Red−Uguisu",
+    "barcode": "",
+    "circle": "",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576478636
+  },
+  {
+    "title": "ロストインアビス",
+    "author": "ZXmeko",
+    "barcode": "",
+    "circle": "ゼロ軸",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576630735
+  },
+  {
+    "title": "ロストインアビスＩＩ",
+    "author": "ZXmeko",
+    "barcode": "",
+    "circle": "ゼロ軸",
+    "parody": "Made In Abyss",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576674254
+  },
+  {
+    "title": "生活日和",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576834678
+  },
+  {
+    "title": "おれにXXX教えて欲しいっス!",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792576907195
+  },
+  {
+    "title": "俺のクラスメイトは露出狂だった件",
+    "translatedTitle": "Duel no. 7",
+    "author": "Daikung",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792577006740
+  },
+  {
+    "title": "俺のクラスメイトは露出狂だった件 田舎旅編",
+    "translatedTitle": "Duel no. 10",
+    "author": "Daikung",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792577267927
+  },
+  {
+    "title": "WNW Stepout",
+    "author": "50％OFF",
+    "barcode": "",
+    "circle": "にぶんのいち",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792577443407
+  },
+  {
+    "title": "Colorful 2014 12 Winter",
+    "author": "あみん / ろく",
+    "barcode": "",
+    "circle": "MiUMiU / hibipi",
+    "parody": "Hunter x Hunter",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792577565976
+  },
+  {
+    "title": "大胆01",
+    "author": "Daikung",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792595222075
+  },
+  {
+    "title": "エーススターDribble",
+    "translatedTitle": "Duel no. 5",
+    "author": "Daikung",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792595291885
+  },
+  {
+    "title": "ぜんぶ青のせい 新學期版",
+    "author": "オソウザイヤ",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792595627208
+  },
+  {
+    "title": "わがままきてよ",
+    "author": "お茶",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792595694841
+  },
+  {
+    "title": "ともだちのくちのなか",
+    "author": "baby stick",
+    "barcode": "",
+    "circle": "棒屋さん",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792595821549
+  },
+  {
+    "title": "つきとたいよう",
+    "author": "baby stick",
+    "barcode": "",
+    "circle": "棒屋さん",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792597224618
+  },
+  {
+    "title": "ちつちゃなラブトリー",
+    "author": "baby stick",
+    "barcode": "",
+    "circle": "棒屋さん",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792597304808
+  },
+  {
+    "title": "野犬と少年",
+    "author": "baby stick",
+    "barcode": "",
+    "circle": "棒屋さん",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792597421465
+  },
+  {
+    "title": "子犬と少年",
+    "author": "baby stick",
+    "barcode": "",
+    "circle": "棒屋さん",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792597477510
+  },
+  {
+    "title": "trunkcase",
+    "author": "Steelwire",
+    "barcode": "",
+    "circle": "Steelworks",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792597736155
+  },
+  {
+    "title": "Comic YO 12 2013.DEC Vol.001",
+    "author": "ねりうめ/めがね",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792597893040
+  },
+  {
+    "title": "俗悪人",
+    "author": "黒川呪詛",
+    "barcode": "",
+    "circle": "Catcher in the Rye",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598031266
+  },
+  {
+    "title": "我が家のわんこ兄ちゃん",
+    "author": "Sサイズ",
+    "barcode": "",
+    "circle": "しなちく",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598177769
+  },
+  {
+    "title": "我が家のわんこ兄ちゃん お風呂編",
+    "author": "Sサイズ",
+    "barcode": "",
+    "circle": "しなちく",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598349229
+  },
+  {
+    "title": "マイリトルラバー",
+    "author": "Sサイズ",
+    "barcode": "",
+    "circle": "しなちく",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598526184
+  },
+  {
+    "title": "我が家のわんこ兄ちゃん1",
+    "author": "Sサイズ",
+    "barcode": "",
+    "circle": "しなちく",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792598647607
+  },
+  {
+    "title": "少年ズーム Vol. 18 2015 Autumn",
+    "author": "Shigemaru Shigeru",
+    "barcode": "",
+    "circle": "Shonen Zoom",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598767479
+  },
+  {
+    "title": "林檎のため息",
+    "author": "Shoko",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792598872060
+  },
+  {
+    "title": "オレじゃなきゃキミじゃなきゃ",
+    "author": "",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792599029649
+  },
+  {
+    "title": "毛が生えへん!",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792608507805
+  },
+  {
+    "title": "毛が生えへん!2",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792608567185
+  },
+  {
+    "title": "裸の王子様",
+    "author": "Ziploc",
+    "barcode": "",
+    "circle": "やまちゃん",
+    "parody": "Ousama Ranking",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792608674817
+  },
+  {
+    "title": "たすけておにいちゃん",
+    "author": "Ziploc",
+    "barcode": "",
+    "circle": "やまちゃん",
+    "parody": "Ensemble Stars",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792608805001
+  },
+  {
+    "title": "ラクガキ マジカ",
+    "author": "JaiL Black",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792608864861
+  },
+  {
+    "title": "あの夏の本音",
+    "author": "Baito Tackey",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609032414
+  },
+  {
+    "title": "八雲先輩と雄介くん 淫夢編!",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609147206
+  },
+  {
+    "title": "八雲先輩と雄介くん 奉仕編!",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609219410
+  },
+  {
+    "title": "ショタセクステット2",
+    "author": "commamion / Pfactory",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792609366639
+  },
+  {
+    "title": "ショタセクステット5",
+    "author": "commamion / Pfactory",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792609505220
+  },
+  {
+    "title": "実習生はみんながだいすき",
+    "author": "お茶",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609628313
+  },
+  {
+    "title": "かけさん＋",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609686321
+  },
+  {
+    "title": "全国一斉性徴調査",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609768595
+  },
+  {
+    "title": "リナリア",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792609846707
+  },
+  {
+    "title": "あむあむ",
+    "author": "かまぼこRED",
+    "barcode": "",
+    "circle": "",
+    "parody": "Let's Go",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792610005384
+  },
+  {
+    "title": "れぶちん",
+    "author": "navi001",
+    "barcode": "",
+    "circle": "",
+    "parody": "Let's Go",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792610131943
+  },
+  {
+    "title": "こたそた",
+    "author": "50％OFF",
+    "barcode": "",
+    "circle": "にぶんのいち",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792610218337
+  },
+  {
+    "title": "ベストフレンド!",
+    "author": "50％OFF",
+    "barcode": "",
+    "circle": "にぶんのいち",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792610325780
+  },
+  {
+    "title": "温浴ぶらぶら少年備忘録",
+    "author": "",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792935843824
+  },
+  {
+    "title": "ダイキくんとユウタくん。下",
+    "author": "Drum Kan",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792935962782
+  },
+  {
+    "title": "Snowy Lodge",
+    "author": "Shigemaru Shigeru",
+    "barcode": "",
+    "circle": "Shonen Zoom",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792936031128
+  },
+  {
+    "title": "毛が生えへん!3",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792940953319
+  },
+  {
+    "title": "彼氏目線",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792941288188
+  },
+  {
+    "title": "カラコミ!!",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792941360249
+  },
+  {
+    "title": "Friendship",
+    "author": "Pikachurin",
+    "barcode": "",
+    "circle": "Preteenparty",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792941431951
+  },
+  {
+    "title": "純情サラブレット 駄菓子編",
+    "translatedTitle": "Innocent Thoroughbred Ver. Candy House",
+    "author": "Pikachurin",
+    "barcode": "",
+    "circle": "Preteenparty",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792941623163
+  },
+  {
+    "title": "純情サラブレット ヒーロー編",
+    "translatedTitle": "Innocent Thoroughbred Ver. Hero",
+    "author": "Pikachurin",
+    "barcode": "",
+    "circle": "Preteenparty",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792941763110
+  },
+  {
+    "title": "ぼくたちのビギニング",
+    "author": "Dokenzen Daze",
+    "barcode": "",
+    "circle": "しんじゅや",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792942062075
+  },
+  {
+    "title": "知ってしまったが故に",
+    "author": "Serina Naru",
+    "barcode": "",
+    "circle": "Naruage!",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792942175167
+  },
+  {
+    "title": "健全?いいえ、不健全なので凍結します!",
+    "author": "Ziploc",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792942765553
+  },
+  {
+    "title": "あの日、ぼくは親友とセックスした 完結総集編",
+    "author": "ri.",
+    "barcode": "",
+    "circle": "FlowerBlade",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1792943021084
+  },
+  {
+    "title": "えらべるチルチャック",
+    "author": "アイスクレヨ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Dungeon Meshi",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792943147472
+  },
+  {
+    "title": "29才合法ショタ",
+    "author": "アイスクレヨ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Dungeon Meshi",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792943906851
+  },
+  {
+    "title": "夜横列車",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792943965454
+  },
+  {
+    "title": "ピピン ピンピン 大ピンチ!",
+    "author": "Rua",
+    "barcode": "",
+    "circle": "Hiza Band",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792944288140
+  },
+  {
+    "title": "スケベな部屋からの脱出",
+    "author": "JaiL Black",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792944381205
+  },
+  {
+    "title": "えっちしっくす",
+    "author": "碧茶",
+    "barcode": "",
+    "circle": "",
+    "parody": "Vocaloid",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792944445576
+  },
+  {
+    "title": "もっと!ケイゾウいじり",
+    "author": "さわら",
+    "barcode": "",
+    "circle": "めんたいこうまい",
+    "parody": "Yo-kai Watch",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792944806365
+  },
+  {
+    "title": "熱チュ～5分",
+    "author": "さわら",
+    "barcode": "",
+    "circle": "めんたいこうまい",
+    "parody": "Shinkalion",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792944961827
+  },
+  {
+    "title": "こそだてゴースト",
+    "author": "とみこ",
+    "barcode": "",
+    "circle": "かりんぱに",
+    "parody": "Boku no Hero Academia",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792945071921
+  },
+  {
+    "title": "やbathギル!",
+    "author": "Wool",
+    "barcode": "",
+    "circle": "Keito No Mori",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792945149031
+  },
+  {
+    "title": "ヒューミッド",
+    "translatedTitle": "Humid",
+    "author": "ahonobo",
+    "barcode": "",
+    "circle": "",
+    "parody": "Kemono",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1792945252405
+  },
+  {
+    "title": "紺平くんと一茶くん 初えっち目前の話",
+    "author": "Isako",
+    "barcode": "",
+    "circle": "なちたま",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793089884039
+  },
+  {
+    "title": "ちぐはぐ",
+    "translatedTitle": "tig-hug",
+    "author": "はしくれ太郎",
+    "barcode": "",
+    "circle": "すいかのたね",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090010505
+  },
+  {
+    "title": "職業体験できるかな?",
+    "author": "丼ブラコ",
+    "barcode": "",
+    "circle": "ほちどんまい",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090122243
+  },
+  {
+    "title": "スマホを持ったらxxx!",
+    "author": "丼ブラコ",
+    "barcode": "",
+    "circle": "ほちどんまい",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090182660
+  },
+  {
+    "title": "健康診断できるかな",
+    "author": "丼ブラコ",
+    "barcode": "",
+    "circle": "ほちどんまい",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090277961
+  },
+  {
+    "title": "道で出会った少年のおしっこちょうだい!",
+    "author": "こーすけぽけ",
+    "barcode": "",
+    "circle": "ぺこ連盟",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090481945
+  },
+  {
+    "title": "僕の変態M兄ちゃん",
+    "author": "A禄",
+    "barcode": "",
+    "circle": "起床無理",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090553099
+  },
+  {
+    "title": "異文化るむしぇおりんぐん2",
+    "author": "commamion",
+    "barcode": "",
+    "circle": "",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090682855
+  },
+  {
+    "title": "25 x 2 Time!",
+    "author": "50％OFF",
+    "barcode": "",
+    "circle": "にぶんのいち",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793090763026
+  },
+  {
+    "title": "南東バッリヤード",
+    "author": "50％OFF",
+    "barcode": "",
+    "circle": "にぶんのいち",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793092577730
+  },
+  {
+    "title": "きゅん!",
+    "translatedTitle": "Qun!",
+    "author": "めたもまりも",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793092711801
+  },
+  {
+    "title": "filament.",
+    "author": "ポリロンQ",
+    "barcode": "",
+    "circle": "",
+    "parody": "World Trigger",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793092756469
+  },
+  {
+    "title": "愛情グルメ",
+    "author": "K-zima",
+    "barcode": "",
+    "circle": "CHERRY MOON",
+    "parody": "Fullmetal Alchemist",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793092917469
+  },
+  {
+    "title": "天使のわけまえ",
+    "author": "",
+    "barcode": "",
+    "circle": "Heavens",
+    "parody": "Fullmetal Alchemist",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793093023303
+  },
+  {
+    "title": "流され3P男子寮 2nd season",
+    "author": "ri.",
+    "barcode": "",
+    "circle": "FlowerBlade",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793093820635
+  },
+  {
+    "title": "流され3P卒業旅行",
+    "author": "ri.",
+    "barcode": "",
+    "circle": "FlowerBlade",
+    "parody": "",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1793093913428
+  },
+  {
+    "title": "C.S.",
+    "author": "cow&chickin",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268235854
+  },
+  {
+    "title": "Digimon Adventure All Series Heroes",
+    "author": "放課後パラダイス",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268319139
+  },
+  {
+    "title": "Satellite U",
+    "author": "エーテル",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268387853
+  },
+  {
+    "title": "太拓本",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268464645
+  },
+  {
+    "title": "ハニーベイビーに気をつける!",
+    "author": "一条かるね",
+    "barcode": "",
+    "circle": "ハイパーブロンド",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268701298
+  },
+  {
+    "title": "ローリングアンビバレンツホールド",
+    "author": "月光盗賊",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268866436
+  },
+  {
+    "title": "プラムジュース",
+    "translatedTitle": "Plum Juice",
+    "author": "放課後パラダイス",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793268957945
+  },
+  {
+    "title": "キッズ チョコ",
+    "translatedTitle": "Kids Choco",
+    "author": "ちんじゅう",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1793269146036
+  },
+  {
+    "title": "P P PLANET.",
+    "author": "るいこ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269212650
+  },
+  {
+    "title": "暴走列車",
+    "author": "Hoshiai Hilo",
+    "barcode": "Damaged",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269432619
+  },
+  {
+    "title": "JTH",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269471782
+  },
+  {
+    "title": "テインテインTown!",
+    "author": "放課後パラダイス",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269532341
+  },
+  {
+    "title": "快楽電波",
+    "author": "放課後パラダイス",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269592918
+  },
+  {
+    "title": "黄道通い",
+    "author": "平らな字宙",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269789107
+  },
+  {
+    "title": "剥き拓也",
+    "author": "沙門亭",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793269976188
+  },
+  {
+    "title": "Baby Salamander",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1793270065411
+  },
+  {
+    "title": "エピジェネシス",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270145137
+  },
+  {
+    "title": "底意ならくのこころ",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270228259
+  },
+  {
+    "title": "煙吐く龍のよな灯が見える",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270395940
+  },
+  {
+    "title": "檳榔的封印",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270526297
+  },
+  {
+    "title": "たくやくんとあそぼう!",
+    "author": "放課後パラダイス",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270649735
+  },
+  {
+    "title": "天然同胞宮殿遠近法の 書",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270729785
+  },
+  {
+    "title": "たくやマニア",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270792735
+  },
+  {
+    "title": "青春18禁きっぷ",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793270878114
+  },
+  {
+    "title": "純約18禁 いなづまリックドム",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271027130
+  },
+  {
+    "title": "BrotherBlueBerry",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271353610
+  },
+  {
+    "title": "遠近 あちこち",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271423534
+  },
+  {
+    "title": "花も嵐も踏み越えて",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271526682
+  },
+  {
+    "title": "びしよ濡れデジコード",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271672870
+  },
+  {
+    "title": "TVの国からキラキラ",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271737704
+  },
+  {
+    "title": "ミツシングリンク",
+    "translatedTitle": "Missing Link",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793271830088
+  },
+  {
+    "title": "誠実な本",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272187980
+  },
+  {
+    "title": "誠実な本 Reprint",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272455769
+  },
+  {
+    "title": "悦びも哀しみも幾歳月",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272608598
+  },
+  {
+    "title": "螺旋の涙",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272739307
+  },
+  {
+    "title": "螺旋の涙",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272840146
+  },
+  {
+    "title": "溺れ魚",
+    "author": "Hoshiai Hilo",
+    "barcode": "",
+    "circle": "くるぐるDNA",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793272897608
+  },
+  {
+    "title": "あっちむいてほしい こっちにむいてちゆ 2",
+    "author": "Kemeko Gin",
+    "barcode": "",
+    "circle": "Summer Child",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793273026859
+  },
+  {
+    "title": "ゴーグル越しの君と僕",
+    "author": "limpetbomb / りむこ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1793273219244
+  },
+  {
+    "title": "ローリングアンビバレンツホールド2",
+    "author": "月光盗賊",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793273703390
+  },
+  {
+    "title": "Please!",
+    "author": "ひふみ",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": true,
+    "addedAt": 1793273781109
+  },
+  {
+    "title": "ホワイトフレイム",
+    "author": "武井涼子",
+    "barcode": "",
+    "circle": "",
+    "parody": "Digimon",
+    "size": "B5",
+    "isAnthology": false,
+    "addedAt": 1793273905570
+  }
+]

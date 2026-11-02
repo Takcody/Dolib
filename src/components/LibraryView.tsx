@@ -309,6 +309,9 @@ export function LibraryView() {
     if (isExporting) return;
     setIsExporting(true);
 
+    const dateStr = new Date().toISOString().split('T')[0];
+    const fileName = `${filenamePrefix}-${dateStr}.json`;
+
     const toastId = toast.loading(
       isFull
         ? t('generating_full_backup', 'Preparing Full Archive (serializing cover images)...')
@@ -317,54 +320,98 @@ export function LibraryView() {
 
     setTimeout(async () => {
       try {
-        const jsonString = JSON.stringify(dataToExport, null, 2);
-        const dateStr = new Date().toISOString().split('T')[0];
-        const fileName = `${filenamePrefix}-${dateStr}.json`;
-
         if (Capacitor.isNativePlatform()) {
           let savedUri = '';
           let savedPathDesc = '';
+          let targetPath = `Dolib/${fileName}`;
+          let targetDir = Directory.Documents;
 
-          try {
-            // Write directly to Documents/Dolib folder on internal storage
-            const res = await Filesystem.writeFile({
-              path: `Dolib/${fileName}`,
-              data: jsonString,
-              directory: Directory.Documents,
+          // Helper for writing initial chunk and appending batches
+          const writeChunkedFile = async (dir: Directory, relPath: string) => {
+            // Write array header
+            const initRes = await Filesystem.writeFile({
+              path: relPath,
+              data: '[\n',
+              directory: dir,
               encoding: Encoding.UTF8,
               recursive: true,
             });
-            savedUri = res.uri;
-            savedPathDesc = `Documents/Dolib/${fileName}`;
-          } catch (docErr) {
-            // Fallback to Cache directory if Documents permission is restricted
-            const res = await Filesystem.writeFile({
-              path: fileName,
-              data: jsonString,
-              directory: Directory.Cache,
+
+            const total = dataToExport.length;
+            const chunkSize = 25;
+
+            for (let i = 0; i < total; i += chunkSize) {
+              const chunk = dataToExport.slice(i, i + chunkSize);
+              const chunkStr = JSON.stringify(chunk).slice(1, -1);
+              const prefix = i === 0 ? '  ' : ',\n  ';
+
+              await Filesystem.appendFile({
+                path: relPath,
+                data: prefix + chunkStr,
+                directory: dir,
+                encoding: Encoding.UTF8,
+              });
+
+              const currentProgress = Math.min(i + chunkSize, total);
+              const percent = Math.round((currentProgress / total) * 100);
+
+              toast.loading(
+                t('export_progress', {
+                  current: currentProgress,
+                  total,
+                  percent,
+                  defaultValue: `Exporting library... ${currentProgress} / ${total} (${percent}%)`,
+                }),
+                { id: toastId }
+              );
+
+              // Allow UI event loop tick for smooth toast rendering
+              await new Promise((resolve) => setTimeout(resolve, 15));
+            }
+
+            // Close JSON array
+            await Filesystem.appendFile({
+              path: relPath,
+              data: '\n]',
+              directory: dir,
               encoding: Encoding.UTF8,
             });
-            savedUri = res.uri;
+
+            return initRes.uri;
+          };
+
+          try {
+            savedUri = await writeChunkedFile(Directory.Documents, `Dolib/${fileName}`);
+            savedPathDesc = `Documents/Dolib/${fileName}`;
+          } catch (docErr) {
+            // Fallback to Cache directory if Documents access is restricted
+            savedUri = await writeChunkedFile(Directory.Cache, fileName);
             savedPathDesc = `Cache/${fileName}`;
           }
 
           toast.dismiss(toastId);
-          toast.success(t('export_success_location', { filename: fileName, defaultValue: `Saved backup file '${fileName}' to Documents / Storage` }), {
-            duration: 6000,
-            action: {
-              label: t('share_send', 'Share / Send'),
-              onClick: async () => {
-                try {
-                  await Share.share({
-                    title: isFull ? 'Dolib Full Library Backup' : 'Dolib Compact Library Backup',
-                    text: `Dolib Library Backup (${dataToExport.length} books)`,
-                    url: savedUri,
-                    dialogTitle: 'Share Backup File',
-                  });
-                } catch (e) {}
+          toast.success(
+            t('export_success_location', {
+              filename: fileName,
+              defaultValue: `Saved backup file '${fileName}' to Documents / Storage`,
+            }),
+            {
+              duration: 6000,
+              action: {
+                label: t('share_send', 'Share / Send'),
+                onClick: async () => {
+                  try {
+                    await Share.share({
+                      title: isFull ? 'Dolib Full Library Backup' : 'Dolib Compact Library Backup',
+                      text: `Dolib Library Backup (${dataToExport.length} books)`,
+                      url: savedUri,
+                      dialogTitle: 'Share Backup File',
+                    });
+                  } catch (e) {}
+                },
               },
-            },
-          });
+            }
+          );
 
           // Present Share sheet for quick sending
           try {
@@ -375,22 +422,37 @@ export function LibraryView() {
               dialogTitle: 'Share or Send Backup File',
             });
           } catch (shareErr) {
-            // User dismissed Share sheet - file remains safely saved in Documents/Dolib/
+            // User dismissed Share sheet - file remains safely saved in storage
           }
         } else {
-          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+          // Web platform streaming Blob implementation
+          const blobParts: string[] = ['[\n'];
+          const chunkSize = 25;
+          const total = dataToExport.length;
+
+          for (let i = 0; i < total; i += chunkSize) {
+            const chunk = dataToExport.slice(i, i + chunkSize);
+            const chunkStr = JSON.stringify(chunk).slice(1, -1);
+            const prefix = i === 0 ? '  ' : ',\n  ';
+            blobParts.push(prefix + chunkStr);
+          }
+          blobParts.push('\n]');
+
+          const blob = new Blob(blobParts, { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
           const downloadAnchor = document.createElement('a');
-          downloadAnchor.setAttribute("href", dataStr);
-          downloadAnchor.setAttribute("download", fileName);
+          downloadAnchor.setAttribute('href', url);
+          downloadAnchor.setAttribute('download', fileName);
           document.body.appendChild(downloadAnchor);
           downloadAnchor.click();
           downloadAnchor.remove();
+          URL.revokeObjectURL(url);
 
           toast.dismiss(toastId);
           toast.success(`Downloaded '${fileName}' to Downloads folder`);
         }
       } catch (err: any) {
-        console.error("Export error:", err);
+        console.error('Export error:', err);
         toast.dismiss(toastId);
         toast.error(t('export_error', 'Error generating export file'));
       } finally {

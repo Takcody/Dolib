@@ -83,7 +83,7 @@ export function BookForm({ book, onClose }: BookFormProps) {
 
       const img = new Image();
       img.onload = () => {
-        const maxDim = 1200;
+        const maxDim = 800;
         let width = img.width;
         let height = img.height;
 
@@ -95,18 +95,20 @@ export function BookForm({ book, onClose }: BookFormProps) {
             width = Math.round((width * maxDim) / height);
             height = maxDim;
           }
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height);
-            const compressed = canvas.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.85);
-            setCoverImage(compressed);
-            toast.success(t('cover_image_updated', { defaultValue: 'Cover image updated' }));
-            return;
-          }
         }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.75);
+          setCoverImage(compressed);
+          toast.success(t('cover_image_updated', { defaultValue: 'Cover image updated' }));
+          return;
+        }
+
         setCoverImage(src);
         toast.success(t('cover_image_updated', { defaultValue: 'Cover image updated' }));
       };
