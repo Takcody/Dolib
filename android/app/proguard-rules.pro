@@ -4,6 +4,9 @@
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
 
+# Repackage all classes into a single default package for DEX size & obfuscation optimization
+-repackageclasses ''
+
 # Preserve WebView JavaScript Interfaces
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;

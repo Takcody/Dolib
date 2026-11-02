@@ -42,6 +42,11 @@ export class LibrisDatabase extends Dexie {
 
 export const db = new LibrisDatabase();
 
+// Request persistent storage permission in WebView to prevent OS cleanup under low storage
+if (typeof window !== 'undefined' && navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().catch(() => {});
+}
+
 // Initialize settings if not exists
 export async function initSettings() {
   const settings = await db.settings.get('main');

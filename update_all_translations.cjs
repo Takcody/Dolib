@@ -17,6 +17,11 @@ const dictionary = {
     qr_prev_page: "Previous",
     qr_next_page: "Next",
     qr_auto_play: "Auto-Play",
+    generating_full_backup: "Preparing Full Archive (serializing cover images)...",
+    generating_compact_backup: "Preparing Compact Backup...",
+    export_success_location: "Saved backup file '{{filename}}' to Documents / Storage",
+    export_error: "Error generating export file",
+    share_send: "Share / Send"
   },
   ja: {
     library_stats: "ライブラリ統計",
@@ -33,6 +38,11 @@ const dictionary = {
     qr_prev_page: "前へ",
     qr_next_page: "次へ",
     qr_auto_play: "自動再生",
+    generating_full_backup: "完全なアーカイブを準備中（表紙画像をシリアライズ中）...",
+    generating_compact_backup: "コンパクトバックアップを準備中...",
+    export_success_location: "バックアップファイル '{{filename}}' をDocuments/Storageに保存しました",
+    export_error: "エクスポートファイルの生成エラー",
+    share_send: "共有 / 送信"
   },
   es: {
     library_stats: "Estadísticas de la biblioteca",
@@ -49,6 +59,11 @@ const dictionary = {
     qr_prev_page: "Anterior",
     qr_next_page: "Siguiente",
     qr_auto_play: "Auto-reproducción",
+    generating_full_backup: "Preparando archivo completo (serializando imágenes de portada)...",
+    generating_compact_backup: "Preparando copia de seguridad compacta...",
+    export_success_location: "Copia '{{filename}}' guardada en Documentos / Almacenamiento",
+    export_error: "Error al generar el archivo de exportación",
+    share_send: "Compartir / Enviar"
   },
   zh: {
     library_stats: "图库统计",
@@ -65,6 +80,11 @@ const dictionary = {
     qr_prev_page: "上一页",
     qr_next_page: "下一页",
     qr_auto_play: "自动播放",
+    generating_full_backup: "正在准备完整归档（序列化封面图像）...",
+    generating_compact_backup: "正在准备紧凑型备份...",
+    export_success_location: "已将备份文件 '{{filename}}' 保存至 Document / 存储",
+    export_error: "生成导出文件时出错",
+    share_send: "分享 / 发送"
   },
   fr: {
     library_stats: "Statistiques de la bibliothèque",
@@ -81,6 +101,11 @@ const dictionary = {
     qr_prev_page: "Précédent",
     qr_next_page: "Suivant",
     qr_auto_play: "Lecture auto",
+    generating_full_backup: "Préparation de l'archive complète (sérialisation des images)...",
+    generating_compact_backup: "Préparation de la sauvegarde compacte...",
+    export_success_location: "Sauvegarde '{{filename}}' enregistrée dans Documents / Stockage",
+    export_error: "Erreur lors de la génération du fichier d'exportation",
+    share_send: "Partager / Envoyer"
   },
   de: {
     library_stats: "Bibliotheksstatistiken",
@@ -97,6 +122,11 @@ const dictionary = {
     qr_prev_page: "Zurück",
     qr_next_page: "Weiter",
     qr_auto_play: "Auto-Wiedergabe",
+    generating_full_backup: "Vollständiges Archiv wird vorbereitet (Cover-Bilder werden verarbeitet)...",
+    generating_compact_backup: "Kompaktes Backup wird vorbereitet...",
+    export_success_location: "Backup '{{filename}}' in Dokumente / Speicher gespeichert",
+    export_error: "Fehler beim Erstellen der Exportdatei",
+    share_send: "Teilen / Senden"
   },
   ko: {
     library_stats: "라이브러리 통계",
@@ -113,6 +143,11 @@ const dictionary = {
     qr_prev_page: "이전",
     qr_next_page: "다음",
     qr_auto_play: "자동 재생",
+    generating_full_backup: "전체 아카이브 준비 중 (표지 이미지 직렬화 중)...",
+    generating_compact_backup: "압축 백업 준비 중...",
+    export_success_location: "백업 파일 '{{filename}}'이 문서/저장소에 저장되었습니다",
+    export_error: "내보내기 파일 생성 오류",
+    share_send: "공유 / 전송"
   },
   pt: {
     library_stats: "Estatísticas da biblioteca",
@@ -129,6 +164,11 @@ const dictionary = {
     qr_prev_page: "Anterior",
     qr_next_page: "Próximo",
     qr_auto_play: "Auto-reprodução",
+    generating_full_backup: "Preparando arquivo completo (serializando imagens de capa)...",
+    generating_compact_backup: "Preparando backup compacto...",
+    export_success_location: "Backup '{{filename}}' salvo em Documentos / Armazenamento",
+    export_error: "Erro ao gerar arquivo de exportação",
+    share_send: "Compartilhar / Enviar"
   },
   it: {
     library_stats: "Statistiche libreria",
@@ -145,6 +185,11 @@ const dictionary = {
     qr_prev_page: "Precedente",
     qr_next_page: "Successivo",
     qr_auto_play: "Riproduzione auto",
+    generating_full_backup: "Preparazione dell'archivio completo (serializzazione immagini)...",
+    generating_compact_backup: "Preparazione del backup compatto...",
+    export_success_location: "Backup '{{filename}}' salvato in Documenti / Memoria",
+    export_error: "Errore durante la generazione del file di esportazione",
+    share_send: "Condividi / Invia"
   },
   ru: {
     library_stats: "Статистика библиотеки",
@@ -161,6 +206,11 @@ const dictionary = {
     qr_prev_page: "Назад",
     qr_next_page: "Вперед",
     qr_auto_play: "Автопоказ",
+    generating_full_backup: "Подготовка полного архива (сериализация обложек)...",
+    generating_compact_backup: "Подготовка компактного бэкапа...",
+    export_success_location: "Резервная копия '{{filename}}' сохранена в Документы / Память",
+    export_error: "Ошибка при создании файла экспорта",
+    share_send: "Поделиться / Отправить"
   }
 };
 

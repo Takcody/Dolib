@@ -2,6 +2,9 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Book } from '@/lib/db';
 import { triggerFilePickerIntent } from '@/lib/pickerState';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { BookCard } from './BookCard';
 import { BookForm } from './BookForm';
 import { CameraCapture } from './CameraCapture';
@@ -43,6 +46,7 @@ import {
   FileText,
   ShieldCheck,
   Lock,
+  Loader2,
 } from 'lucide-react';
 import {
   Dialog,
@@ -299,41 +303,124 @@ export function LibraryView() {
     return result;
   }, [books, search, sort, duplicateGroupIds]);
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  const exportLibraryToFile = async (dataToExport: any[], filenamePrefix: string, isFull: boolean) => {
+    if (isExporting) return;
+    setIsExporting(true);
+
+    const toastId = toast.loading(
+      isFull
+        ? t('generating_full_backup', 'Preparing Full Archive (serializing cover images)...')
+        : t('generating_compact_backup', 'Preparing Compact Backup...')
+    );
+
+    setTimeout(async () => {
+      try {
+        const jsonString = JSON.stringify(dataToExport, null, 2);
+        const dateStr = new Date().toISOString().split('T')[0];
+        const fileName = `${filenamePrefix}-${dateStr}.json`;
+
+        if (Capacitor.isNativePlatform()) {
+          let savedUri = '';
+          let savedPathDesc = '';
+
+          try {
+            // Write directly to Documents/Dolib folder on internal storage
+            const res = await Filesystem.writeFile({
+              path: `Dolib/${fileName}`,
+              data: jsonString,
+              directory: Directory.Documents,
+              encoding: Encoding.UTF8,
+              recursive: true,
+            });
+            savedUri = res.uri;
+            savedPathDesc = `Documents/Dolib/${fileName}`;
+          } catch (docErr) {
+            // Fallback to Cache directory if Documents permission is restricted
+            const res = await Filesystem.writeFile({
+              path: fileName,
+              data: jsonString,
+              directory: Directory.Cache,
+              encoding: Encoding.UTF8,
+            });
+            savedUri = res.uri;
+            savedPathDesc = `Cache/${fileName}`;
+          }
+
+          toast.dismiss(toastId);
+          toast.success(t('export_success_location', { filename: fileName, defaultValue: `Saved backup file '${fileName}' to Documents / Storage` }), {
+            duration: 6000,
+            action: {
+              label: t('share_send', 'Share / Send'),
+              onClick: async () => {
+                try {
+                  await Share.share({
+                    title: isFull ? 'Dolib Full Library Backup' : 'Dolib Compact Library Backup',
+                    text: `Dolib Library Backup (${dataToExport.length} books)`,
+                    url: savedUri,
+                    dialogTitle: 'Share Backup File',
+                  });
+                } catch (e) {}
+              },
+            },
+          });
+
+          // Present Share sheet for quick sending
+          try {
+            await Share.share({
+              title: isFull ? 'Dolib Full Library Backup' : 'Dolib Compact Library Backup',
+              text: `Dolib Library Backup (${dataToExport.length} books)`,
+              url: savedUri,
+              dialogTitle: 'Share or Send Backup File',
+            });
+          } catch (shareErr) {
+            // User dismissed Share sheet - file remains safely saved in Documents/Dolib/
+          }
+        } else {
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+          const downloadAnchor = document.createElement('a');
+          downloadAnchor.setAttribute("href", dataStr);
+          downloadAnchor.setAttribute("download", fileName);
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          downloadAnchor.remove();
+
+          toast.dismiss(toastId);
+          toast.success(`Downloaded '${fileName}' to Downloads folder`);
+        }
+      } catch (err: any) {
+        console.error("Export error:", err);
+        toast.dismiss(toastId);
+        toast.error(t('export_error', 'Error generating export file'));
+      } finally {
+        setIsExporting(false);
+      }
+    }, 100);
+  };
+
   const handleExportCompact = () => {
     const compactBooks = books.map(({ id, coverImage, ...rest }) => rest);
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(compactBooks, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `dolib-compact-backup-${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    toast.success(t('export_success', 'Compact backup downloaded!'));
+    exportLibraryToFile(compactBooks, 'dolib-compact-backup', false);
   };
 
   const handleExportFull = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(books, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `dolib-full-backup-${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    toast.success(t('export_success', 'Full backup downloaded!'));
+    exportLibraryToFile(books, 'dolib-full-backup', true);
   };
 
   const importBooksList = async (importedBooks: any[]) => {
     let count = 0;
     for (const b of importedBooks) {
-      if (b.title) {
+      const title = b.title || b.t;
+      if (title) {
         await db.books.add({
-          title: b.title,
-          translatedTitle: b.tr || b.translatedTitle || undefined,
-          author: b.a || b.author || undefined,
-          circle: b.c || b.circle || undefined,
-          barcode: b.b || b.barcode || undefined,
-          parody: b.p || b.parody || undefined,
-          size: b.s || b.size || 'B5',
+          title: title,
+          translatedTitle: b.translatedTitle || b.tr || undefined,
+          author: b.author || b.a || undefined,
+          circle: b.circle || b.c || undefined,
+          barcode: b.barcode || b.b || undefined,
+          parody: b.parody || b.p || undefined,
+          size: b.size || b.s || 'B5',
           isAnthology: b.isAnthology || false,
           coverImage: b.coverImage || undefined,
           addedAt: Date.now(),
@@ -364,18 +451,26 @@ export function LibraryView() {
     }
   };
 
-  const handleQrImport = (scannedData: string) => {
+  const handleQrImport = (scannedData: string): boolean => {
     try {
       const parsed = JSON.parse(scannedData);
 
       if (parsed.p && parsed.t && Array.isArray(parsed.b)) {
         // Multi-part paginated chunk
+        if (scannedChunksRef.current[parsed.p]) {
+          const count = Object.keys(scannedChunksRef.current).length;
+          const nextNeeded = Array.from({ length: parsed.t }, (_, i) => i + 1).find((p) => !scannedChunksRef.current[p]);
+          toast.info(`Page ${parsed.p} already scanned (${count}/${parsed.t} pages). Please scan Page ${nextNeeded}!`);
+          return false;
+        }
+
         scannedChunksRef.current[parsed.p] = parsed.b;
         const collectedCount = Object.keys(scannedChunksRef.current).length;
 
         if (collectedCount < parsed.t) {
-          toast.info(`Scanned Page ${parsed.p} of ${parsed.t}. Scan remaining pages to complete import!`);
-          return;
+          const nextNeeded = Array.from({ length: parsed.t }, (_, i) => i + 1).find((p) => !scannedChunksRef.current[p]);
+          toast.info(`Scanned Page ${parsed.p} of ${parsed.t}! Now scan Page ${nextNeeded} (${collectedCount}/${parsed.t} completed)`);
+          return false; // Return false to keep scanner open for remaining pages
         }
 
         // All chunks collected!
@@ -387,13 +482,18 @@ export function LibraryView() {
         }
         scannedChunksRef.current = {}; // Reset map
         importBooksList(allBooks);
+        toast.success(`All ${parsed.t} QR pages scanned! Imported ${allBooks.length} items.`);
+        return true; // Return true to close scanner
       } else if (Array.isArray(parsed)) {
         importBooksList(parsed);
+        return true;
       } else {
-        toast.error(t('import_invalid_format', 'Invalid QR code data'));
+        toast.error(t('import_invalid_format', 'Invalid QR code data. Please scan a valid Library QR code.'));
+        return false; // Keep scanner open
       }
     } catch (e) {
-      toast.error(t('import_error', 'Error parsing QR code'));
+      toast.error(t('import_error', 'Error parsing QR code. Please scan a valid Library QR code.'));
+      return false; // Keep scanner open
     }
   };
 
@@ -1001,16 +1101,34 @@ export function LibraryView() {
               </p>
 
               <div className="grid grid-cols-1 gap-2.5">
-                <Button variant="outline" className="h-auto p-3 flex items-start gap-3 text-left justify-start" onClick={handleExportCompact}>
-                  <FileJson className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <Button
+                  variant="outline"
+                  disabled={isExporting}
+                  className="h-auto p-3 flex items-start gap-3 text-left justify-start"
+                  onClick={handleExportCompact}
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-5 h-5 text-primary shrink-0 mt-0.5 animate-spin" />
+                  ) : (
+                    <FileJson className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  )}
                   <div>
                     <div className="font-semibold text-xs">{t('export_compact_title')}</div>
                     <div className="text-[11px] text-muted-foreground font-normal">{t('export_compact_desc')}</div>
                   </div>
                 </Button>
 
-                <Button variant="outline" className="h-auto p-3 flex items-start gap-3 text-left justify-start" onClick={handleExportFull}>
-                  <FileSpreadsheet className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <Button
+                  variant="outline"
+                  disabled={isExporting}
+                  className="h-auto p-3 flex items-start gap-3 text-left justify-start"
+                  onClick={handleExportFull}
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-5 h-5 text-primary shrink-0 mt-0.5 animate-spin" />
+                  ) : (
+                    <FileSpreadsheet className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  )}
                   <div>
                     <div className="font-semibold text-xs">{t('export_full_title')}</div>
                     <div className="text-[11px] text-muted-foreground font-normal">{t('export_full_desc')}</div>
@@ -1220,12 +1338,13 @@ export function LibraryView() {
         {showQrScanner && (
           <CameraCapture
             mode="scan"
+            qrOnly={true}
             allowModeSwitch={false}
-            onScan={(data) => {
-              handleQrImport(data);
+            onScan={(data) => handleQrImport(data)}
+            onClose={() => {
               setShowQrScanner(false);
+              scannedChunksRef.current = {};
             }}
-            onClose={() => setShowQrScanner(false)}
           />
         )}
       </AnimatePresence>

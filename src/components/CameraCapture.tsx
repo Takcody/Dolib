@@ -17,10 +17,11 @@ import {
 
 interface CameraCaptureProps {
   onCapture?: (imageData: string) => void;
-  onScan?: (data: string) => void;
+  onScan?: (data: string) => boolean | void;
   onClose: () => void;
   mode?: 'photo' | 'scan';
   allowModeSwitch?: boolean;
+  qrOnly?: boolean;
 }
 
 export function CameraCapture({
@@ -29,6 +30,7 @@ export function CameraCapture({
   onClose,
   mode: initialMode = 'photo',
   allowModeSwitch = false,
+  qrOnly = false,
 }: CameraCaptureProps) {
   const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -40,6 +42,8 @@ export function CameraCapture({
   const zxingReaderRef = useRef<MultiFormatReader | null>(null);
   const nativeDetectorRef = useRef<any>(null);
   const hasScannedRef = useRef(false);
+  const processScanRef = useRef<(() => void) | null>(null);
+  const lastScannedCodeRef = useRef<string | null>(null);
 
   const [mode, setMode] = useState<'photo' | 'scan'>(initialMode);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -61,16 +65,25 @@ export function CameraCapture({
     try {
       const reader = new MultiFormatReader();
       const hints = new Map<DecodeHintType, any>();
-      hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-        BarcodeFormat.EAN_13,
-        BarcodeFormat.EAN_8,
-        BarcodeFormat.CODE_128,
-        BarcodeFormat.CODE_39,
-        BarcodeFormat.UPC_A,
-        BarcodeFormat.UPC_E,
-        BarcodeFormat.QR_CODE,
-        BarcodeFormat.ITF,
-      ]);
+      const formats = qrOnly
+        ? [BarcodeFormat.QR_CODE]
+        : [
+            BarcodeFormat.EAN_13,
+            BarcodeFormat.EAN_8,
+            BarcodeFormat.CODE_128,
+            BarcodeFormat.CODE_39,
+            BarcodeFormat.CODE_93,
+            BarcodeFormat.CODABAR,
+            BarcodeFormat.UPC_A,
+            BarcodeFormat.UPC_E,
+            BarcodeFormat.UPC_EAN_EXTENSION,
+            BarcodeFormat.ITF,
+            BarcodeFormat.QR_CODE,
+            BarcodeFormat.DATA_MATRIX,
+            BarcodeFormat.PDF_417,
+            BarcodeFormat.AZTEC,
+          ];
+      hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
       hints.set(DecodeHintType.TRY_HARDER, true);
       reader.setHints(hints);
       zxingReaderRef.current = reader;
@@ -80,14 +93,31 @@ export function CameraCapture({
 
     if (typeof window !== 'undefined' && 'BarcodeDetector' in window) {
       try {
+        const nativeFormats = qrOnly
+          ? ['qr_code']
+          : [
+              'ean_13',
+              'ean_8',
+              'code_128',
+              'code_39',
+              'code_93',
+              'codabar',
+              'upc_a',
+              'upc_e',
+              'itf',
+              'qr_code',
+              'data_matrix',
+              'pdf417',
+              'aztec',
+            ];
         nativeDetectorRef.current = new (window as any).BarcodeDetector({
-          formats: ['ean_13', 'ean_8', 'code_128', 'code_39', 'upc_a', 'upc_e', 'qr_code', 'itf'],
+          formats: nativeFormats,
         });
       } catch (e) {
         console.warn('Native BarcodeDetector not initialized:', e);
       }
     }
-  }, []);
+  }, [qrOnly]);
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
@@ -170,17 +200,29 @@ export function CameraCapture({
   const handleScanSuccess = useCallback(
     (code: string) => {
       setDetectedCode(code);
+      lastScannedCodeRef.current = code;
       try {
         navigator.vibrate?.([60, 40, 60]);
       } catch {}
-      toast.success(`Scanned: ${code}`);
-      setTimeout(() => {
-        if (onScan) {
-          onScan(code);
-        }
-        stopCamera();
-        onClose();
-      }, 400);
+
+      const scanResult = onScan ? onScan(code) : undefined;
+      const keepOpen = scanResult === false;
+
+      if (keepOpen) {
+        // Multi-part scan in progress: keep scanner active
+        // Reset scan lock quickly so scanner can immediately detect the NEXT different QR page
+        setTimeout(() => {
+          hasScannedRef.current = false;
+          setDetectedCode(null);
+          processScanRef.current?.();
+        }, 300);
+      } else {
+        toast.success(`Scanned: ${code}`);
+        setTimeout(() => {
+          stopCamera();
+          onClose();
+        }, 400);
+      }
     },
     [onScan, stopCamera, onClose]
   );
@@ -199,50 +241,74 @@ export function CameraCapture({
       const rotCanvas = rotCanvasRef.current;
       const zxing = zxingReaderRef.current;
 
-      if (video && video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
-        if (nativeDetectorRef.current) {
-          try {
-            const barcodes = await nativeDetectorRef.current.detect(video);
-            if (barcodes && barcodes.length > 0) {
-              for (const bc of barcodes) {
-                if (bc.rawValue && bc.rawValue.trim()) {
-                  hasScannedRef.current = true;
-                  handleScanSuccess(bc.rawValue.trim());
-                  return;
+      const checkCodeAndTrigger = (raw: string) => {
+        const trimmed = raw.trim();
+        if (!trimmed) return false;
+        if (trimmed === lastScannedCodeRef.current) {
+          // Ignore identical code frame silently while waiting for next page
+          return false;
+        }
+        hasScannedRef.current = true;
+        handleScanSuccess(trimmed);
+        return true;
+      };
+
+      if (video && video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0 && canvas && zxing) {
+        const vw = video.videoWidth;
+        const vh = video.videoHeight;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (ctx) {
+          // Tight crop to the center viewfinder region (55% width, 35% height)
+          // This isolates the single barcode aligned inside the center frame box
+          const cropW = Math.round(vw * 0.55);
+          const cropH = Math.round(vh * 0.35);
+          const cropX = Math.round((vw - cropW) / 2);
+          const cropY = Math.round((vh - cropH) / 2);
+
+          canvas.width = cropW;
+          canvas.height = cropH;
+          ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+          // 1. Try Native BarcodeDetector on cropped central viewfinder canvas
+          if (nativeDetectorRef.current) {
+            try {
+              const barcodes = await nativeDetectorRef.current.detect(canvas);
+              if (barcodes && barcodes.length > 0) {
+                // Sort barcodes by proximity to the exact center of the viewfinder frame
+                const centerX = cropW / 2;
+                const centerY = cropH / 2;
+                barcodes.sort((a: any, b: any) => {
+                  const boxA = a.boundingBox;
+                  const boxB = b.boundingBox;
+                  const distA = boxA ? Math.hypot(boxA.x + boxA.width / 2 - centerX, boxA.y + boxA.height / 2 - centerY) : 0;
+                  const distB = boxB ? Math.hypot(boxB.x + boxB.width / 2 - centerX, boxB.y + boxB.height / 2 - centerY) : 0;
+                  return distA - distB;
+                });
+
+                for (const bc of barcodes) {
+                  if (bc.rawValue && checkCodeAndTrigger(bc.rawValue)) {
+                    return;
+                  }
                 }
               }
+            } catch {}
+          }
+
+          // 2. Try ZXing reader on cropped central viewfinder canvas
+          try {
+            const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
+            const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
+            const result = zxing.decodeWithState(binaryBitmap);
+            zxing.reset();
+            if (result && result.getText() && checkCodeAndTrigger(result.getText())) {
+              return;
             }
-          } catch {}
-        }
+          } catch {
+            zxing.reset();
+          }
 
-        if (canvas && rotCanvas && zxing) {
-          const vw = video.videoWidth;
-          const vh = video.videoHeight;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          if (ctx) {
-            const cropW = Math.round(vw * 0.7);
-            const cropH = Math.round(vh * 0.7);
-            const cropX = Math.round((vw - cropW) / 2);
-            const cropY = Math.round((vh - cropH) / 2);
-
-            canvas.width = cropW;
-            canvas.height = cropH;
-            ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-
-            try {
-              const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
-              const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-              const result = zxing.decodeWithState(binaryBitmap);
-              zxing.reset();
-              if (result && result.getText()) {
-                hasScannedRef.current = true;
-                handleScanSuccess(result.getText());
-                return;
-              }
-            } catch {
-              zxing.reset();
-            }
-
+          // 3. Try rotated ZXing scan for vertical barcodes inside central viewfinder canvas
+          if (rotCanvas) {
             const rotCtx = rotCanvas.getContext('2d', { willReadFrequently: true });
             if (rotCtx) {
               rotCanvas.width = cropH;
@@ -258,9 +324,7 @@ export function CameraCapture({
                 const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
                 const result = zxing.decodeWithState(binaryBitmap);
                 zxing.reset();
-                if (result && result.getText()) {
-                  hasScannedRef.current = true;
-                  handleScanSuccess(result.getText());
+                if (result && result.getText() && checkCodeAndTrigger(result.getText())) {
                   return;
                 }
               } catch {
@@ -276,10 +340,17 @@ export function CameraCapture({
       }
     };
 
+    processScanRef.current = () => {
+      if (isMounted && !hasScannedRef.current) {
+        processScan();
+      }
+    };
+
     processScan();
 
     return () => {
       isMounted = false;
+      processScanRef.current = null;
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [mode, handleScanSuccess]);
