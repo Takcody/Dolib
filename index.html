@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Dolib - Doujinshi Library</title>
-    <meta name="description" content="An app to keep track of doujinshi that you've purchased." />
+    <meta name="description" content="Official website for Dolib" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
@@ -15,19 +15,173 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Dolib" />
     <meta name="google-site-verification" content="WURt-qj27uIt2dClQRl4PcvUDY0HKzeMoz3kbVX_2wU" />
-    <script>
-      (function() {
-        try {
-          const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (systemDark) {
-            document.documentElement.classList.add('dark');
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
           }
-        } catch (e) {}
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Navigation -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
+        <span class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">D</span>
+        <span>Dolib</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-slate-300 font-medium">
+        <a href="#features" class="hover:text-white transition">Features</a>
+        <a href="#showcase" class="hover:text-white transition">Showcase</a>
+        <a href="#download" class="hover:text-white transition">Download</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/Takcody/Dolib" target="_blank" rel="noreferrer"
+           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-slate-900 border border-slate-700 hover:bg-slate-800 hover:border-slate-600 transition">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span>Repository</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-20 px-6 overflow-hidden">
+      <div class="absolute inset-0 -z-10 flex items-center justify-center">
+        <div class="w-[600px] h-[350px] bg-indigo-600/20 blur-[130px] rounded-full"></div>
+      </div>
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-6">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Welcome to Dolib</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+          Let's see what we can do with <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Dolib</span>!
+        </h1>
+        <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          Describe the core value proposition of Dolib here in one or two clear, impact-focused sentences.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#download" class="w-full sm:w-auto px-6 py-3.5 text-base font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition">
+            Get Started
+          </a>
+          <a href="https://github.com/Takcody/Dolib/releases" target="_blank" rel="noreferrer" class="w-full sm:w-auto px-6 py-3.5 text-base font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
+            View Releases
+          </a>
+        </div>
+      </div>
+
+      <main>
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-20 px-6 overflow-hidden">
+      <div class="absolute inset-0 -z-10 flex items-center justify-center">
+        <div class="w-[600px] h-[350px] bg-pink-600/15 blur-[140px] rounded-full"></div>
+      </div>
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-pink-500/10 text-pink-400 border border-pink-500/20 mb-6">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span>Doujin Catalog & Tracking App</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+          Organize your collection with <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-400">Dolib</span>.
+        </h1>
+        <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          The ultimate Android app designed to seamlessly catalog, track, and manage your doujin collections all in one place.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="https://play.google.com/store/apps/details?id=com.dolib.db" target="_blank" rel="noreferrer" 
+             class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-base font-semibold rounded-xl bg-pink-600 hover:bg-pink-500 text-white shadow-lg shadow-pink-600/30 transition">
+            <i data-lucide="download" class="w-5 h-5"><span>Get it on Google Play</span></i>
+          </a>
+          <a href="https://github.com/Takcody/Dolib" target="_blank" rel="noreferrer" class="w-full sm:w-auto px-6 py-3.5 text-base font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
+            View Source Code
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features -->
+    <section id="features" class="py-20 px-6 border-t border-slate-800/60 bg-slate-950/40">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <h2 class="text-3xl font-bold tracking-tight text-white mb-3">Built for Collectors</h2>
+          <p class="text-slate-400 text-base">Everything you need to keep your library neatly structured.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Feature 1 -->
+          <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-slate-700 transition">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center mb-5">
+              <i data-lucide="library" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Comprehensive Catalog</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Keep a detailed, structured database of your entire physical and digital collection.</p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-slate-700 transition">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center mb-5">
+              <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Track Stats & Progress</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Monitor your library growth, reading stats, and custom collection milestones effortlessly.</p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-slate-700 transition">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center mb-5">
+              <i data-lucide="feather" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Clean, Fast UI</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Designed with a responsive and lightweight interface optimized for smooth browsing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download CTA -->
+    <section id="download" class="py-20 px-6 border-t border-slate-800/60">
+      <div class="max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-pink-950/30 to-slate-900/60 border border-pink-500/20 p-8 sm:p-12 text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-white mb-4">Start managing your library today</h2>
+        <p class="text-slate-400 max-w-xl mx-auto mb-8 text-sm sm:text-base">
+          Download Dolib on Google Play or check out the repository for more details.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="https://play.google.com/store/apps/details?id=com.dolib.db" target="_blank" rel="noreferrer"
+             class="px-6 py-3 rounded-xl bg-pink-600 hover:bg-pink-500 font-medium text-white transition">
+            Google Play Store
+          </a>
+          <a href="https://github.com/Takcody/Dolib" target="_blank" rel="noreferrer" class="px-6 py-3 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-white transition">
+            GitHub Repo
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 py-8 px-6 text-center text-xs text-slate-500">
+    <p>© 2026 Dolib. Open source project hosted on GitHub.</p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
 </html>
